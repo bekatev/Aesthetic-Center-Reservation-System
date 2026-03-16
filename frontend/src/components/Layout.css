@@ -1,0 +1,143 @@
+/**
+ * Layout.css — App shell, navigation, main content area
+ * Date picker base styles live in App.css (shared)
+ */
+
+/* ─── Layout Structure ─── */
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ─── Navigation ─── */
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-lg) var(--space-2xl) 0;
+  background: var(--color-white);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.nav-left,
+.nav-right {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-date-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.nav-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.nav-links {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-sm) 0;
+  border-bottom: var(--border-width-thick) solid transparent;
+}
+
+.nav-links a:hover {
+  color: var(--color-text);
+}
+
+.nav-links a.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 768px) {
+  .nav {
+    padding: var(--space-md) var(--space-lg) 0;
+  }
+
+  .nav-links {
+    gap: var(--space-2xl);
+  }
+
+  .nav-date-picker .date-display span {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 640px) {
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .nav-left {
+    display: none;
+  }
+
+  .nav-links {
+    order: 1;
+    justify-content: center;
+    gap: var(--space-2xl);
+  }
+
+  .nav-right {
+    order: 2;
+    justify-content: center;
+  }
+
+  .nav-date-picker {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-date-picker .date-display {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .nav-links {
+    gap: var(--space-lg);
+  }
+
+  .nav-links a {
+    font-size: var(--font-size-base);
+  }
+}

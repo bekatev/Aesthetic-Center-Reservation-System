@@ -1,0 +1,93 @@
+/**
+ * Modal.css — Base modal overlay and container
+ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-sm);
+  overflow-y: auto;
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+  max-width: 37.5rem;
+  width: 100%;
+  max-height: calc(100vh - var(--space-lg));
+  overflow: auto;
+  margin: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-lg) var(--space-xl);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  flex: 1;
+  min-width: 0;
+  padding-right: var(--space-sm);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  line-height: 1;
+  padding: var(--space-xs);
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  color: var(--color-text-secondary);
+}
+
+.modal-body {
+  padding: 0 var(--space-xl) var(--space-xl) var(--space-xl);
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: var(--space-sm);
+  }
+
+  .modal {
+    width: 100%;
+    max-height: calc(100vh - var(--space-lg));
+  }
+
+  .modal-header {
+    padding: 0.875rem var(--space-lg);
+  }
+
+  .modal-title {
+    font-size: var(--font-size-md);
+  }
+
+  .modal-body {
+    padding: var(--space-lg);
+  }
+}
