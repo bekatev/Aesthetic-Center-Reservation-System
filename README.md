@@ -1,4 +1,36 @@
-# Aesthetic Center Reservation System
+# Workspace Contents
+
+This workspace contains two main sections:
+
+## 🎯 Interview Preparation Materials (New!)
+
+**Complete interview preparation package for Senior Frontend Developer position at IKG Team**
+
+### Quick Start
+1. **Start Here**: Read `INTERVIEW_PREP_README.md` for overview and timeline
+2. **Main Guide**: `INTERVIEW_PREP.md` - Comprehensive preparation guide
+3. **Technical Review**: `TECHNICAL_CHEATSHEET.md` - Quick reference for technical concepts
+4. **Practice**: `PRACTICE_QUESTIONS.md` - 15+ questions with sample answers
+5. **Day-of**: `INTERVIEW_QUICK_REFERENCE.md` - Print this for interview day
+6. **Last Minute**: `LAST_MINUTE_PREP.md` - Final 30-minute review
+7. **Company Research**: `COMPANY_RESEARCH_FOLLOWUP.md` - Research guide & follow-up templates
+8. **Track Progress**: `PREPARATION_TRACKER.md` - Checklist to track your preparation
+
+### Files Overview
+- `INTERVIEW_PREP_README.md` - Start here! Complete guide to using all materials
+- `INTERVIEW_PREP.md` - Main preparation guide (3-4 hour read)
+- `TECHNICAL_CHEATSHEET.md` - Technical concepts quick reference
+- `PRACTICE_QUESTIONS.md` - Interview questions with sample answers
+- `INTERVIEW_QUICK_REFERENCE.md` - Day-of cheat sheet (PRINT THIS)
+- `LAST_MINUTE_PREP.md` - 30-minute final review before interview
+- `COMPANY_RESEARCH_FOLLOWUP.md` - Company research & email templates
+- `PREPARATION_TRACKER.md` - Preparation progress checklist
+
+**Recommended Timeline**: Start 5-7 days before your interview. See `INTERVIEW_PREP_README.md` for detailed timeline.
+
+---
+
+## 💼 Aesthetic Center Reservation System
 
 A full-stack MVP for managing staff, services, and reservations at an aesthetic/beauty center.
 
