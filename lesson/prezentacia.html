@@ -234,6 +234,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
   outline-offset: 2px;
 }
 
+[hidden] { display: none !important; }
 .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .path .kicker { margin: 0 0 6px; color: var(--muted); font-weight: 700; font-size: .95rem; }
 .path.alt { background: #f3faf7; }
@@ -499,7 +500,7 @@ kbd {
 </head>
 <body>
 <div class="progress" aria-hidden="true"><span id="bar"></span></div>
-<section class="slide title-slide active" data-name="სათაური" data-note="მოკლედ თქვით თემა: გამრავლების თვისებები, გვ. 56–57.">
+<section class="slide title-slide active" data-name="სათაური" data-note="თემა მოკლედ: გამრავლების სამი თვისება, გვ. 56–57. სახელს მოსწავლეები თვითონ იტყვიან, სანამ დაფაზე გამოჩნდება.">
   <div class="wrap">
     <p class="mark">მათემატიკა, V კლასი</p>
     <h1>გამრავლების<br>თვისებები</h1>
@@ -507,11 +508,11 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="რვეულები" data-note="ჯერ თავად თქვან, როგორ დათვლიდნენ. მერე გახსენით პასუხი.">
+<section class="slide" data-name="რვეულები" data-note="ჯერ კითხვა წაიკითხონ. წყვილებმა ორი გზა იპოვონ. გზები და პასუხი მერე გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">გვ. 56</p>
-    <h2>რამდენი რვეულია?</h2>
-    <p class="lead">ხუთ მოსწავლეს თითო 6 რვეული აქვს.</p>
+    <h2>სულ რამდენი რვეულია?</h2>
+    <p class="lead">ხუთი მოსწავლიდან თითოეულს 6 რვეული აქვს.</p>
     <div class="groups" aria-hidden="true">
       <div class="gcard" style="--c:#e15a42">6</div>
       <div class="gcard" style="--c:#0f7a6e">6</div>
@@ -519,7 +520,10 @@ kbd {
       <div class="gcard" style="--c:#d99a16">6</div>
       <div class="gcard" style="--c:#8e2f3c">6</div>
     </div>
-    <div class="paths">
+    <div class="tries">
+      <button class="btn" data-open="ways">ორი გზა</button>
+    </div>
+    <div class="paths" id="ways" hidden>
       <div class="path">
         <p class="kicker">შეკრებით</p>
         <div class="eq">6 + 6 + 6 + 6 + 6</div>
@@ -552,10 +556,10 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="გადანაცვლება" data-note="სურვილისამებრ ორმა მოსწავლემ ადგილი გაცვალოს. ღილაკიც ცვლის 6-სა და 5-ს.">
+<section class="slide" data-name="გადანაცვლებადობა" data-note="ერთმა წყვილმა 6·5 დათვალოს, მეორემ 5·6. ჯერ თავად თქვან, რა არ შეიცვალა. სახელი მერე გაიხსნას. სურვილისამებრ ორმა მოსწავლემ ადგილიც გაცვალოს.">
   <div class="wrap">
-    <p class="eyebrow">გადანაცვლების თვისება</p>
-    <h2>ადგილის გაცვლა</h2>
+    <p class="eyebrow">ორი ანგარიში</p>
+    <h2>6 · 5 და 5 · 6</h2>
     <div class="swap" id="swap">
       <div class="numbox" data-a>6</div>
       <div class="op">·</div>
@@ -564,13 +568,16 @@ kbd {
       <div class="numbox result">30</div>
     </div>
     <button class="btn" id="swapBtn" type="button">გადაანაცვლე</button>
-    <p class="rule">მამრავლების ადგილის გაცვლა ნამრავლს არ ცვლის. 6 · 5 = 5 · 6.</p>
+    <div class="tries">
+      <button class="btn" data-open="ruleSwap" type="button">რა შევნიშნეთ?</button>
+    </div>
+    <p class="rule" id="ruleSwap" hidden>გადანაცვლებადობის თვისება. მამრავლების ადგილის გაცვლა ნამრავლს არ ცვლის. a · b = b · a.</p>
   </div>
 </section>
 
-<section class="slide" data-name="ერთი და ნული" data-note="პასუხი ჯერ ხელის აწევით, მერე გახსენით.">
+<section class="slide" data-name="ერთი და ნული" data-note="კერძო შემთხვევაა, სამ თვისებაში არ შედის. პასუხი ჯერ ხელის აწევით. ბოლოს ერთად თქვან: ერთზე გამრავლება რიცხვს არ ცვლის.">
   <div class="wrap">
-    <p class="eyebrow">ერთისა და ნულის თვისებები</p>
+    <p class="eyebrow">კერძო შემთხვევა, სამ თვისებაში არ შედის</p>
     <h2>ერთი და ნული</h2>
     <div class="pair">
       <article class="tile one card">
@@ -592,10 +599,10 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="ჯგუფები" data-note="თუ დრო გეჭირებათ, ეს სლაიდი მოკლედ გაიარეთ.">
+<section class="slide" data-name="ჯუფთებადობა" data-note="კლასი ორად გაიყოს. ერთმა მხარემ მარცხენა ფრჩხილი დათვალოს, მეორემ მარჯვენა. სახელი მერე გაიხსნას.">
   <div class="wrap">
-    <p class="eyebrow">ჯგუფების თვისება</p>
-    <h2>ფრჩხილების ადგილი</h2>
+    <p class="eyebrow">ორი ანგარიში</p>
+    <h2>ფრჩხილი სად დგას?</h2>
     <div class="paths">
       <div class="path">
         <p class="kicker">ჯერ მარცხენა ფრჩხილი</p>
@@ -606,15 +613,22 @@ kbd {
         <div class="eq">3 · (4 · 5) = 3 · 20 = 60</div>
       </div>
     </div>
-    <p class="rule">ფრჩხილების ადგილის შეცვლა ნამრავლს არ ცვლის.</p>
+    <div class="tries">
+      <button class="btn" data-open="ruleGrp" type="button">რა შევნიშნეთ?</button>
+    </div>
+    <p class="rule" id="ruleGrp" hidden>ჯუფთებადობის თვისება. ფრჩხილის ადგილი ნამრავლს არ ცვლის. (a · b) · c = a · (b · c).</p>
   </div>
 </section>
 
-<section class="slide" data-name="განაწილება" data-note="ორივე გზა დაფაზეც ჩაიწეროს.">
+<section class="slide" data-name="განრიგებადობა" data-note="წყვილმა თავად აირჩიოს გზა. ფურცლები გაცვალონ და ნახონ, ერთი რიცხვი გამოვიდა თუ არა. სახელი და ფორმულა მერე გაიხსნას.">
   <div class="wrap">
-    <p class="eyebrow">განაწილების თვისება</p>
-    <h2>განაწილება</h2>
-    <div class="paths">
+    <p class="eyebrow">ამოცანა</p>
+    <h2>ხუთი ყუთი</h2>
+    <p class="lead">თითო ყუთში 9 წითელი და 4 ლურჯი რვეულია. სულ რამდენია?</p>
+    <div class="tries">
+      <button class="btn" data-open="twoWays" type="button">ორი გზა</button>
+    </div>
+    <div class="paths" id="twoWays" hidden>
       <div class="path">
         <p class="kicker">ჯერ ფრჩხილში</p>
         <div class="eq">5 · (9 + 4) = 5 · 13 = 65</div>
@@ -624,20 +638,30 @@ kbd {
         <div class="eq">5 · 9 + 5 · 4 = 45 + 20 = 65</div>
       </div>
     </div>
-    <div class="formula">a(b + c) = ab + ac</div>
-    <p class="fine">მარჯვნიდანაც იგივეა: (b + c)a = ba + ca. სამ შესაკრებზეც ასეა: 6 · (2 + 3 + 5) = 6·2 + 6·3 + 6·5 = 60.</p>
+    <div class="tries">
+      <button class="btn" data-open="ruleDist" type="button">რა შევნიშნეთ?</button>
+    </div>
+    <div id="ruleDist" hidden>
+      <div class="formula">a(b + c) = ab + ac</div>
+      <p class="rule">განრიგებადობის თვისება ჯამის მიმართ. მარჯვნიდანაც იგივეა: (b + c) · a = ba + ca. სამ შესაკრებზე: 6 · (2 + 3 + 5) = 6·2 + 6·3 + 6·5 = 60. გამოკლებაზე: a(b − c) = ab − ac.</p>
+    </div>
   </div>
 </section>
 
-<section class="slide" data-name="შესაკრებები" data-note="ჯერ კლასმა თქვას 4a + 5a, მერე გახსენით.">
+<section class="slide" data-name="საერთო მამრავლი" data-note="ჯერ უკვე ნანახი ტოლობა აჩვენეთ. მერე ჰკითხეთ 9a+7a. ეს ახალი კანონი არ არის: განრიგებადობაა უკან წაკითხული, საერთო მამრავლი ფრჩხილებს გარეთ გადის.">
   <div class="wrap">
-    <p class="eyebrow">ისევ განაწილება</p>
-    <h2>ერთნაირი შესაკრებები</h2>
-    <div class="eq xl">9a + 7a = (9 + 7)a = 16a</div>
+    <p class="eyebrow">განრიგებადობიდან</p>
+    <h2>საერთო მამრავლი</h2>
+    <p class="lead">უკვე ვნახეთ: 5 · 9 + 5 · 4 = 5 · (9 + 4).</p>
+    <p class="lead">მაშინ 9a + 7a რას უდრის?</p>
+    <div class="tries">
+      <button class="btn" data-open="likeMain" type="button">ჩანაწერი</button>
+      <span id="likeMain" class="shown" hidden>9a + 7a = (9 + 7)a = 16a</span>
+    </div>
     <div class="tries">
       <div class="try">4a + 5a = <button class="btn ghost" data-open="like">?</button><span id="like" class="shown" hidden>9a</span></div>
     </div>
-    <p class="rule">გამოკლებაზეც ასეა: a(b − c) = ab − ac.</p>
+    <p class="rule">საერთო მამრავლი a ფრჩხილებს გარეთ გადის. ეს განრიგებადობის თვისებაა, უკან წაკითხული.</p>
   </div>
 </section>
 
@@ -652,14 +676,14 @@ kbd {
       </article>
       <article class="hw">
         <span class="n">2</span>
-        <p>a-სა და c-ს ჯამი, გამრავლებული 7-ზე<br><button class="btn ghost" data-open="let2" type="button">ჩანაწერი</button> <span id="let2" class="shown" hidden>7(a + c)</span></p>
+        <p>a-სა და c-ს ჯამი, გამრავლებული 7-ზე<br><button class="btn ghost" data-open="let2" type="button">ჩანაწერი</button> <span id="let2" class="shown" hidden>7(a + c) და (a + c) · 7</span></p>
       </article>
       <article class="hw">
         <span class="n">3</span>
         <p>9a-სა და 7a-ს ჯამი<br><button class="btn ghost" data-open="let3" type="button">ჩანაწერი</button> <span id="let3" class="shown" hidden>9a + 7a</span></p>
       </article>
     </div>
-    <p class="rule">ასო რიცხვის ადგილას დგას. 8a იგივეა, რაც 8 · a.</p>
+    <p class="rule">8a იგივეა, რაც 8 · a. 7(a + c) და (a + c) · 7 გადანაცვლებადობით ერთი და იგივეა.</p>
   </div>
 </section>
 
@@ -696,22 +720,26 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="შეჯამება" data-note="სამი წინადადება ერთად. ვისაც უნდა, დაამატოს: დღეს გავიხსენე…">
+<section class="slide" data-name="შეჯამება" data-note="სამმა მოსწავლემ თითო წინადადება თქვას თავისი სიტყვით. სახელები აქ უკვე ჩანს.">
   <div class="wrap">
     <p class="eyebrow">ბოლოს</p>
-    <h2>რა გავიხსენეთ</h2>
+    <h2>სამი თვისება</h2>
     <div class="hwlist">
       <article class="hw">
         <span class="n">1</span>
-        <p>მამრავლების გაცვლა ნამრავლს არ ცვლის.</p>
+        <p>გადანაცვლებადობა: მამრავლების გაცვლა ნამრავლს არ ცვლის. a · b = b · a.</p>
       </article>
       <article class="hw">
         <span class="n">2</span>
-        <p>ერთზე გამრავლება რიცხვს არ ცვლის. ნულზე გამრავლება ნულს იძლევა.</p>
+        <p>ჯუფთებადობა: ფრჩხილის ადგილი ნამრავლს არ ცვლის. (a · b) · c = a · (b · c).</p>
       </article>
       <article class="hw">
         <span class="n">3</span>
-        <p>8a გამოსახულებაა, 8a = 56 ტოლობაა, 8a &gt; 50 უტოლობაა.</p>
+        <p>განრიგებადობა: a(b + c) = ab + ac. აქედან 9a + 7a = 16a.</p>
+      </article>
+      <article class="hw">
+        <span class="n">4</span>
+        <p>ერთზე გამრავლება რიცხვს არ ცვლის. ნულზე გამრავლება ნულს იძლევა. 8a გამოსახულებაა, 8a = 56 ტოლობაა, 8a &gt; 50 უტოლობაა.</p>
       </article>
     </div>
   </div>
@@ -860,7 +888,7 @@ const questions = [
     q: "7(a + c) =",
     options: ["7a", "7c", "7a + 7c", "7a + 7"],
     answer: 2,
-    why: "შვიდი ორივე შესაკრებზე მრავლდება."
+    why: "განრიგებადობით შვიდი ორივე შესაკრებზე მრავლდება. იგივეა (a + c) · 7."
   }
 ];
 
