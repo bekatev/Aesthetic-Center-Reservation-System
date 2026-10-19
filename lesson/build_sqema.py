@@ -9,7 +9,7 @@ from docx import Document
 from docx.oxml.ns import qn
 
 SRC = "/workspace/lesson/sqema-shabloni.docx"
-OUT = "/workspace/lesson/საკითხის სწავლების დაგეგმვის სქემა.docx"
+OUT = "/workspace/lesson/sqema.docx"
 FONT = "Sylfaen"
 INK = RGBColor(0x1C, 0x24, 0x30)
 
@@ -24,7 +24,7 @@ def rfonts(run, name):
         el.set(qn(attr), name)
 
 
-def set_para(p, text, size=12, bold=False):
+def set_para(p, text, size=14, bold=False):
     for r in list(p.runs):
         r._element.getparent().remove(r._element)
     run = p.add_run(text)
@@ -35,7 +35,7 @@ def set_para(p, text, size=12, bold=False):
     rfonts(run, FONT)
 
 
-def append_run(p, text, size=12, bold=False):
+def append_run(p, text, size=14, bold=False):
     run = p.add_run(text)
     run.bold = bold
     run.font.size = Pt(size)
@@ -44,7 +44,7 @@ def append_run(p, text, size=12, bold=False):
     rfonts(run, FONT)
 
 
-def insert_after(paragraph, text, size=12):
+def insert_after(paragraph, text, size=14):
     from docx.text.paragraph import Paragraph
 
     new_p = OxmlElement("w:p")
@@ -82,10 +82,20 @@ def build():
     table = doc.tables[0]
 
     author = doc.paragraphs[2]
-    if "ავტორი" not in author.text:
-        raise SystemExit("author line moved")
-    set_para(author, "გეგმის ავტორი: ბექა თევდორაშვილი, მათემატიკის მასწავლებელი", size=14, bold=True)
-    author.alignment = 1
+    if "XXX" not in author.text:
+        raise SystemExit("author line moved: " + author.text)
+    drop_space = False
+    for run in author.runs:
+        if run.text == ":  # ":
+            run.text = ": "
+        elif run.text == "სკოლის":
+            run.text = ""
+            drop_space = True
+        elif drop_space and run.text == " ":
+            run.text = ""
+            drop_space = False
+        elif run.text == " XXX":
+            run.text = " ბექა თევდორაშვილი"
 
     topic = table.rows[0].cells[0]
     append_run(topic.paragraphs[0], "ნატურალური რიცხვების გამრავლების სამი თვისება: გადანაცვლებადობა, ჯუფთებადობა, განრიგებადობა. ერთისა და ნულის კერძო შემთხვევები. საერთო მამრავლის ფრჩხილებს გარეთ გატანა. გამოსახულება, ტოლობა, უტოლობა.")
@@ -153,16 +163,10 @@ def build():
     )
 
     diff = table.rows[13].cells[0]
-    set_para(
-        diff.paragraphs[0],
-        "რის დიფერენცირებას მოახდენთ?     შინაარსი — არა     პროცესი — დიახ     პროდუქტი — დიახ",
-        size=12,
-        bold=True,
-    )
     fill_blank_after(
         diff,
         "რის დიფერენცირებას",
-        "მიზანი და ამოცანები ყველასთვის ერთია. იცვლება დახმარება გზაზე და ის, რასაც მოსწავლე ბოლოს აბარებს.",
+        "პროცესი და პროდუქტი. შინაარსი არ იცვლება: მიზანი და ამოცანები ყველასთვის ერთია. იცვლება დახმარება გზაზე და ის, რასაც მოსწავლე ბოლოს აბარებს.",
     )
 
     fill_blank_after(
@@ -221,13 +225,18 @@ def build():
     )
 
     heading = doc.paragraphs[7]
-    if "დეტალური" not in heading.text:
+    if "##" not in heading.text and "#" not in heading.text:
         raise SystemExit("heading moved: " + heading.text[:40])
-    set_para(
-        heading,
-        "გაკვეთილის დეტალური გეგმა-კონსპექტი ერთი 45 წუთიანი გაკვეთილისთვის, რომელიც მოიცავს I ფაზას, II ფაზას და III ფაზის დასაწყისს",
-        size=14,
-    )
+    seen_hash = False
+    for run in heading.runs:
+        if run.text.strip("#").strip() == "" and "#" in run.text:
+            if not seen_hash:
+                run.text = " I ფაზას, II ფაზას და III ფაზის დასაწყისს"
+                seen_hash = True
+            else:
+                run.text = ""
+        elif seen_hash and run.text.strip() in {"ფაზას", "/", "ფაზებს"}:
+            run.text = ""
 
     narrative = [
         "გაკვეთილი ერთია, დაახლოებით 40 წუთი. მიზანია, მოსწავლემ შეადაროს ორი ანგარიში, დაინახოს გამრავლების სამი თვისება, ჩაწეროს ისინი ასოთი და გაარჩიოს გამოსახულება, ტოლობა და უტოლობა. რესურსია სახელმძღვანელოს გვ. 56–57, დაფა, რვეული, დანართის ბარათები და სლაიდები, რომლებზეც პასუხი დახურულია.",
@@ -255,18 +264,18 @@ def build():
     if len(blanks) < len(narrative):
         raise SystemExit(f"narrative slots {len(blanks)} < {len(narrative)}")
     for p, text in zip(blanks, narrative):
-        set_para(p, text, size=12)
+        set_para(p, text, size=14)
 
     annex = None
     for p in doc.paragraphs:
         if p.text.strip().startswith("დანართი"):
             annex = p
             break
-    set_para(
-        annex,
-        "დანართი 1. ბარათები (თითო წყვილზე ერთი ბარათი; დაბალი და მაღალი მზაობის ბარათი ცალკეა)",
-        size=14,
-    )
+    for run in annex.runs:
+        if run.text.startswith("დანართი #"):
+            run.text = "დანართი 1. "
+        elif run.text == "დანართები":
+            run.text = "ბარათები"
     cards = [
         "ბარათი 1. რომელი უფრო მოკლეა და რატომ?  4+4+4    და    3·4.",
         "ბარათი 2. ხუთი მოსწავლიდან თითოეულს 6 რვეული აქვს. სულ რამდენი რვეულია? ჩაწერე ორი გზა.",
@@ -287,11 +296,11 @@ def build():
             after = True
             continue
         if after and not p.text.strip() and not placed:
-            set_para(p, cards[0], size=12)
+            set_para(p, cards[0], size=14)
             placed = True
     for text in cards[1:]:
         p = doc.add_paragraph()
-        set_para(p, text, size=12)
+        set_para(p, text, size=14)
 
     doc.core_properties.author = "ბექა თევდორაშვილი"
     doc.core_properties.title = "საკითხის სწავლების დაგეგმვის სქემა — გამრავლების თვისებები"
