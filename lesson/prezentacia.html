@@ -556,7 +556,7 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="გადანაცვლებადობა" data-note="ერთმა წყვილმა 6·5 დათვალოს, მეორემ 5·6. ჯერ თავად თქვან, რა არ შეიცვალა. სახელი მერე გაიხსნას. სურვილისამებრ ორმა მოსწავლემ ადგილიც გაცვალოს.">
+<section class="slide" data-name="გადანაცვლებადობა" data-note="ერთმა წყვილმა 6·5 დათვალოს, მეორემ 5·6. ჯერ თავად თქვან, რა არ შეიცვალა. სახელი მერე გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">ორი ანგარიში</p>
     <h2>6 · 5 და 5 · 6</h2>
@@ -712,14 +712,6 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="კითხვები" data-note="ქულა არ გვინდა. მთავარია, თქვან რატომ. ვინც დაამთავრებს, რვეულში გადაიტანს.">
-  <div class="wrap">
-    <p class="eyebrow">გვ. 57</p>
-    <h2>შეარჩიე სწორი პასუხი</h2>
-    <div id="quiz"></div>
-  </div>
-</section>
-
 <section class="slide" data-name="შეჯამება" data-note="სამმა მოსწავლემ თითო წინადადება თქვას თავისი სიტყვით. სახელები აქ უკვე ჩანს.">
   <div class="wrap">
     <p class="eyebrow">ბოლოს</p>
@@ -740,23 +732,6 @@ kbd {
       <article class="hw">
         <span class="n">4</span>
         <p>ერთზე გამრავლება რიცხვს არ ცვლის. ნულზე გამრავლება ნულს იძლევა. 8a გამოსახულებაა, 8a = 56 ტოლობაა, 8a &gt; 50 უტოლობაა.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="slide" data-name="საშინაო" data-note="პასუხები: 0; 5·27; 56; 0; 7a+7c.">
-  <div class="wrap">
-    <p class="eyebrow">სახლში</p>
-    <h2>საშინაო</h2>
-    <div class="hwlist">
-      <article class="hw">
-        <span class="n">1</span>
-        <p>გვ. 57, №1–№5 რვეულში<br><small>კლასში ნანახიც მოკლედ ჩაწერე.</small></p>
-      </article>
-      <article class="hw">
-        <span class="n">2</span>
-        <p>ასო a-თი დაწერე სამი ჩანაწერი<br><small>ერთი გამოსახულება, ერთი ტოლობა, ერთი უტოლობა.</small></p>
       </article>
     </div>
   </div>
@@ -858,117 +833,6 @@ swapBtn.addEventListener("click", (e) => {
   b.textContent = t;
   a.animate([{ transform: "scale(1.08)" }, { transform: "none" }], { duration: 220 });
 });
-
-const questions = [
-  {
-    q: "თუ a ნებისმიერი რიცხვია, 0 · a =",
-    options: ["a", "2a", "0", "4a"],
-    answer: 2,
-    why: "ნულზე გამრავლება ნულს იძლევა."
-  },
-  {
-    q: "27 + 27 + 27 + 27 + 27 =",
-    options: ["5 · 27", "5 + 27", "4 · 27", "3 · 27"],
-    answer: 0,
-    why: "ხუთი ერთნაირი შესაკრები 5 · 27-ია."
-  },
-  {
-    q: "თუ a = 7, მაშინ 8a =",
-    options: ["55", "56", "57", "87"],
-    answer: 1,
-    why: "8 · 7 = 56."
-  },
-  {
-    q: "თუ a = 0, მაშინ 11a =",
-    options: ["2", "110", "0", "10"],
-    answer: 2,
-    why: "ნულზე გამრავლება ნულს იძლევა."
-  },
-  {
-    q: "7(a + c) =",
-    options: ["7a", "7c", "7a + 7c", "7a + 7"],
-    answer: 2,
-    why: "განრიგებადობით შვიდი ორივე შესაკრებზე მრავლდება. იგივეა (a + c) · 7."
-  }
-];
-
-const quiz = document.getElementById("quiz");
-let qIndex = 0;
-let score = 0;
-let locked = false;
-
-function renderQuestion() {
-  locked = false;
-  const item = questions[qIndex];
-  quiz.innerHTML = "";
-  const top = document.createElement("div");
-  top.className = "quiz-top";
-  top.innerHTML = "<p class='qtext'></p><span class='fine'></span>";
-  top.querySelector(".qtext").textContent = item.q;
-  top.querySelector("span").textContent = "კითხვა " + (qIndex + 1) + " / " + questions.length;
-  const options = document.createElement("div");
-  options.className = "options";
-  item.options.forEach((text, i) => {
-    const b = document.createElement("button");
-    b.className = "opt";
-    b.type = "button";
-    b.textContent = text;
-    b.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (locked) return;
-      locked = true;
-      const good = i === item.answer;
-      if (good) score += 1;
-      [...options.children].forEach((opt, n) => {
-        opt.disabled = true;
-        if (n === item.answer) opt.classList.add("good");
-        if (n === i && !good) opt.classList.add("bad");
-      });
-      why.textContent = (good ? "სწორია. " : "სწორი პასუხი სხვაა. ") + item.why;
-      nextQ.hidden = false;
-    });
-    options.appendChild(b);
-  });
-  const why = document.createElement("p");
-  why.className = "why";
-  const nextQ = document.createElement("button");
-  nextQ.className = "btn";
-  nextQ.type = "button";
-  nextQ.hidden = true;
-  nextQ.textContent = qIndex === questions.length - 1 ? "ქულა" : "შემდეგი";
-  nextQ.addEventListener("click", (e) => {
-    e.stopPropagation();
-    qIndex += 1;
-    if (qIndex >= questions.length) renderScore();
-    else renderQuestion();
-  });
-  quiz.append(top, options, why, nextQ);
-}
-
-function renderScore() {
-  quiz.innerHTML = "";
-  const box = document.createElement("div");
-  box.className = "score";
-  const title = document.createElement("strong");
-  title.textContent = score + " / " + questions.length;
-  const msg = document.createElement("p");
-  msg.className = "lead";
-  msg.textContent = score === questions.length ? "ყველა სწორია." : "რომელიც აგვერია, ის ერთხელაც ვნახოთ.";
-  const again = document.createElement("button");
-  again.className = "btn ghost";
-  again.type = "button";
-  again.textContent = "თავიდან";
-  again.addEventListener("click", (e) => {
-    e.stopPropagation();
-    qIndex = 0;
-    score = 0;
-    renderQuestion();
-  });
-  box.append(title, msg, again);
-  quiz.appendChild(box);
-}
-
-renderQuestion();
 
 const help = document.getElementById("help");
 document.getElementById("helpBtn").addEventListener("click", (e) => {
