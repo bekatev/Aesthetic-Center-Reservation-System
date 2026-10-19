@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>გამრავლების თვისებები — V კლასი</title>
+<style>
+@font-face {
+  font-family: "Noto Sans Georgian";
+  src: url("fonts/NotoSansGeorgian-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans Georgian";
+  src: url("fonts/NotoSansGeorgian-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Serif Georgian";
+  src: url("fonts/NotoSerifGeorgian-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Serif Georgian";
+  src: url("fonts/NotoSerifGeorgian-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #1c2430;
+  --muted: #5e6872;
+  --paper: #f6f1e7;
+  --card: #fffdf9;
+  --line: #eadfce;
+  --maroon: #8e2f3c;
+  --coral: #e15a42;
+  --teal: #0f7a6e;
+  --gold: #d99a16;
+  --blue: #2c66c9;
+  --green: #1c7d45;
+  --shadow: 0 14px 40px rgba(48, 32, 18, 0.08);
+  --serif: "Noto Serif Georgian", "Noto Sans Georgian", Sylfaen, "Segoe UI", sans-serif;
+  --sans: "Noto Sans Georgian", Sylfaen, "Segoe UI", "DejaVu Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: #e7dccb;
+  z-index: 30;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--maroon), var(--coral));
+  width: 0;
+  transition: width .35s ease;
+}
+
+.slide {
+  display: none;
+  height: 100vh;
+  height: 100dvh;
+  padding: 36px 92px 78px;
+}
+.slide.active {
+  display: flex;
+  overflow: auto;
+  animation: rise .38s ease;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide.active { animation: none; }
+}
+
+.wrap {
+  width: min(1120px, 100%);
+  margin: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--maroon);
+  font-weight: 700;
+  letter-spacing: .04em;
+  font-size: 0.95rem;
+}
+h1, h2 { font-family: var(--serif); margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); }
+h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
+.lead { margin: 0; font-size: 1.35rem; color: var(--muted); max-width: 40rem; }
+
+.rule {
+  margin: 4px 0 0;
+  background: #fff6df;
+  border-left: 6px solid var(--gold);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.card, .opt, .btn, .chip, .hw, .word, .path, .step, .numbox {
+  border-radius: 18px;
+}
+
+.row { display: flex; gap: 16px; flex-wrap: wrap; }
+.grow { flex: 1 1 0; min-width: 220px; }
+
+.card, .path, .hw, .word, .step {
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+}
+
+.path, .hw, .word, .step { padding: 16px 18px; }
+
+.eq {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+.eq.xl { font-size: clamp(2.4rem, 5vw, 4rem); text-align: center; }
+.zero { color: var(--coral); }
+
+.labels {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  justify-items: center;
+}
+.tag {
+  background: #f3ebe0;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.tag.product { background: #e5f4f1; color: var(--teal); }
+
+.swap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.numbox {
+  min-width: 110px;
+  text-align: center;
+  background: white;
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 18px 12px;
+  font-size: 3rem;
+  font-weight: 700;
+}
+.numbox.result {
+  background: #e7f6f1;
+  border-color: #b7e2d8;
+  color: var(--teal);
+}
+.op { font-size: 2.4rem; color: var(--muted); font-weight: 700; }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tile { padding: 20px; }
+.tile h3 { margin: 0 0 8px; font-size: 1.15rem; }
+.tile.one { background: #fff8e8; border-color: #f0ddb0; }
+.tile.zero { background: #f4f6f8; border-color: #d9e0e6; }
+.tile p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+.tries { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.try {
+  background: white;
+  border: 1px dashed #d9cbb8;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn, .opt {
+  font-family: inherit;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.btn {
+  background: var(--maroon);
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 12px 18px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost {
+  background: white;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn:focus-visible, .opt:focus-visible, .edge:focus-visible, .dot:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.paths { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.path .kicker { margin: 0 0 6px; color: var(--muted); font-weight: 700; font-size: .95rem; }
+.path.alt { background: #f3faf7; }
+
+.formula {
+  text-align: center;
+  background: var(--ink);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 700;
+}
+.fine { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+.ladder { display: grid; gap: 8px; }
+.ladder div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.steps { display: grid; gap: 10px; }
+.step[hidden],
+#est[hidden],
+#est2[hidden] { display: none !important; }
+.step b { color: var(--teal); }
+
+.problems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.problem {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 18px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+}
+.problem .eq { font-size: 1.7rem; }
+
+.quiz-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.qtext { font-family: var(--serif); font-size: clamp(1.7rem, 3vw, 2.5rem); margin: 0; }
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.opt {
+  background: white;
+  border: 2px solid var(--line);
+  text-align: left;
+  padding: 16px 18px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+.opt.good { background: #e7f6ec; border-color: var(--green); }
+.opt.bad { background: #fdecea; border-color: var(--coral); }
+.why { margin: 0; font-size: 1.15rem; min-height: 1.4em; }
+.score {
+  text-align: center;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+.score strong { font-family: var(--serif); font-size: 2.4rem; }
+
+.compare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.bubble {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.qmark {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--maroon);
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.rounds { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.chip {
+  background: white;
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.chip em { font-style: normal; color: var(--teal); }
+
+.words { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.word { text-align: center; padding: 28px 10px; }
+.word span { display: block; color: var(--muted); font-size: .95rem; margin-bottom: 6px; }
+.word strong { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.3rem); }
+
+.hwlist { display: grid; gap: 10px; }
+.hw { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; }
+.n {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--maroon); color: white; font-weight: 700;
+}
+.hw p { margin: 0; font-size: 1.15rem; }
+.hw small { color: var(--muted); }
+
+.title-slide .wrap { align-items: flex-start; gap: 14px; }
+.mark {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--teal);
+}
+.pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.pill {
+  background: white;
+  border-radius: 999px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  font-weight: 700;
+}
+.bigx {
+  position: absolute;
+  right: 6vw;
+  bottom: 10vh;
+  font-size: 18rem;
+  line-height: .8;
+  color: rgba(142, 47, 60, .08);
+  font-weight: 700;
+  pointer-events: none;
+  font-family: var(--serif);
+}
+
+.groups { display: flex; gap: 12px; flex-wrap: wrap; }
+.gcard {
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: white;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--c, var(--maroon));
+}
+.shown { color: var(--teal); font-weight: 700; }
+
+.footer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px 0 78px;
+  background: rgba(246, 241, 231, .94);
+  border-top: 1px solid var(--line);
+  z-index: 25;
+  font-size: .95rem;
+  color: var(--muted);
+}
+.footer b { color: var(--ink); font-weight: 700; }
+.dots { display: flex; gap: 6px; }
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 0; padding: 0; background: #d9cdb8; cursor: pointer;
+}
+.dot.on { background: var(--maroon); transform: scale(1.25); }
+
+.edge {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 26;
+  width: 52px; height: 84px;
+  border: 0;
+  border-radius: 16px;
+  background: rgba(255,255,255,.75);
+  color: var(--ink);
+  font-size: 2.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.edge.prev { left: 14px; }
+.edge.next { right: 14px; }
+.edge:disabled { opacity: .25; cursor: default; }
+
+.note {
+  position: fixed;
+  left: 78px; right: 78px; bottom: 72px;
+  background: var(--ink);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  z-index: 28;
+  display: none;
+  box-shadow: 0 16px 40px rgba(0,0,0,.2);
+}
+body.show-notes .slide.active .note { display: block; }
+.note small { display: block; color: #f0c36a; font-weight: 700; margin-bottom: 4px; letter-spacing: .04em; }
+
+.help {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 36, 48, .45);
+  z-index: 40;
+  display: none;
+  place-items: center;
+}
+.help.open { display: grid; }
+.help article {
+  background: white;
+  border-radius: 20px;
+  padding: 22px 24px;
+  width: min(460px, calc(100% - 40px));
+  box-shadow: var(--shadow);
+}
+.help h3 { margin: 0 0 8px; font-family: var(--serif); }
+.help p { margin: 6px 0; }
+kbd {
+  background: #f3ebe0;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+@media (max-height: 820px) {
+  .slide { padding: 28px 84px 70px; }
+  .wrap { gap: 12px; }
+  .gcard { width: 68px; height: 68px; font-size: 2rem; }
+  .numbox { font-size: 2.4rem; padding: 12px; }
+  .problem { min-height: 120px; }
+  .word { padding: 16px 8px; }
+}
+@media (max-width: 900px) {
+  .pair, .paths, .problems, .words, .options { grid-template-columns: 1fr; }
+  .slide { padding: 24px 64px 72px; }
+  .labels { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<div class="bigx" aria-hidden="true">×</div>
+
+<section class="slide title-slide active" data-name="სათაური" data-time="დასაწყისი" data-note="წაიკითხეთ სათაური და უთხარით, რომ დღეს წესებს ზეპირად კი არ ვისწავლით — ერთ ხრიკამდე მივალთ.">
+  <div class="wrap">
+    <p class="mark">მათემატიკა · V კლასი · 40 წუთი</p>
+    <h1>გამრავლების<br>თვისებები</h1>
+    <p class="lead">და ნულების ხრიკი — ჯერ ციფრები, მერე ნულები.</p>
+    <div class="pills">
+      <span class="pill">სახელმძღვანელო, გვ. 56–57</span>
+      <span class="pill">გვ. 64–65</span>
+      <span class="pill">15 სლაიდი</span>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="ფანქრები" data-time="0–4 წთ" data-note="ჯერ ჰკითხეთ, როგორ დათვლიდნენ. ხუთი ბარათი თითო 6-იანია — ჯერ შეკრება, მერე 5·6. ორივე პასუხი 30-ია. სახელმძღვანელოში იგივე ამბავია რვეულებით, გვ. 56.">
+  <div class="wrap">
+    <p class="eyebrow">გამოწვევა · გვ. 56</p>
+    <h2>რამდენი ფანქარია?</h2>
+    <p class="lead">ხუთ მოსწავლეს თითო 6 ფანქარი აქვს. ხუთი ჯგუფი, თითოში ექვსი.</p>
+    <div class="groups" aria-hidden="true">
+      <div class="gcard" style="--c:#e15a42">6</div>
+      <div class="gcard" style="--c:#0f7a6e">6</div>
+      <div class="gcard" style="--c:#2c66c9">6</div>
+      <div class="gcard" style="--c:#d99a16">6</div>
+      <div class="gcard" style="--c:#8e2f3c">6</div>
+    </div>
+    <div class="paths">
+      <div class="path">
+        <p class="kicker">შეკრებით</p>
+        <div class="eq">6 + 6 + 6 + 6 + 6</div>
+      </div>
+      <div class="path alt">
+        <p class="kicker">გამრავლებით</p>
+        <div class="eq">5 · 6</div>
+      </div>
+    </div>
+    <div class="tries">
+      <button class="btn" data-open="pens">ორივე პასუხი</button>
+      <span id="pens" class="shown" hidden>30 და 30 — ერთი და იგივე</span>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="სიტყვები" data-time="4–7 წთ" data-note="ერთმა მოსწავლემ ხმამაღლა წაიკითხოს: მამრავლი, მამრავლი, ნამრავლი. ეს სამი სიტყვა დაფაზეც დარჩეს.">
+  <div class="wrap">
+    <p class="eyebrow">ენა</p>
+    <h2>სამი სიტყვა</h2>
+    <div class="eq xl">5 · 6 = 30</div>
+    <div class="labels">
+      <span class="tag">მამრავლი</span>
+      <span></span>
+      <span class="tag">მამრავლი</span>
+      <span></span>
+      <span class="tag product">ნამრავლი</span>
+    </div>
+    <p class="rule">გამრავლება იმავე რიცხვის რამდენჯერმე შეკრებაა.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="გადანაცვლება" data-time="7–18 წთ" data-note="ორი მოსწავლე ფიზიკურად გაცვალოს ადგილი. ნამრავლი არ იცვლება. ღილაკი „გადაანაცვლე“ სლაიდზეც ცვლის 6-სა და 5-ს.">
+  <div class="wrap">
+    <p class="eyebrow">თვისება 1</p>
+    <h2>გადანაცვლება</h2>
+    <div class="swap" id="swap">
+      <div class="numbox" data-a>6</div>
+      <div class="op">·</div>
+      <div class="numbox" data-b>5</div>
+      <div class="op">=</div>
+      <div class="numbox result">30</div>
+    </div>
+    <button class="btn" id="swapBtn" type="button">გადაანაცვლე</button>
+    <p class="rule">მამრავლებს ადგილი რომ გაუცვალო, ნამრავლი იგივე რჩება. 6 · 5 = 5 · 6.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="ერთი და ნული" data-time="7–18 წთ" data-note="ხელის აწევით: 8·1 და 9·0. მოკლედ დაასახელონ თვისება — ერთი არ ცვლის, ნული ნულს იძლევა.">
+  <div class="wrap">
+    <p class="eyebrow">თვისება 2 და 3</p>
+    <h2>ერთი და ნული</h2>
+    <div class="pair">
+      <article class="tile one card">
+        <h3>ერთის თვისება</h3>
+        <div class="eq">7 · 1 = 7</div>
+        <p>ერთზე გამრავლება რიცხვს არ ცვლის.</p>
+      </article>
+      <article class="tile zero card">
+        <h3>ნულის თვისება</h3>
+        <div class="eq">7 · 0 = 0</div>
+        <p>ნულზე გამრავლება ყოველთვის ნულს იძლევა.</p>
+      </article>
+    </div>
+    <div class="tries">
+      <div class="try">8 · 1 = <button class="btn ghost" data-open="o1">?</button><span id="o1" class="shown" hidden>8</span></div>
+      <div class="try">9 · 0 = <button class="btn ghost" data-open="o2">?</button><span id="o2" class="shown" hidden>0</span></div>
+      <div class="try">0 · a = <button class="btn ghost" data-open="o3">?</button><span id="o3" class="shown" hidden>0</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="ჯგუფები" data-time="7–18 წთ" data-note="თუ დრო გაწურავს, ეს სლაიდი ერთი წუთით გაიარეთ. განაწილება არ გამოტოვოთ.">
+  <div class="wrap">
+    <p class="eyebrow">თვისება 4 · ჯგუფების თვისება</p>
+    <h2>ფრჩხილს ადგილი ეცვლება</h2>
+    <div class="paths">
+      <div class="path">
+        <p class="kicker">ჯერ მარცხენა ფრჩხილი</p>
+        <div class="eq">(3 · 4) · 5 = 12 · 5 = 60</div>
+      </div>
+      <div class="path alt">
+        <p class="kicker">ჯერ მარჯვენა ფრჩხილი</p>
+        <div class="eq">3 · (4 · 5) = 3 · 20 = 60</div>
+      </div>
+    </div>
+    <p class="rule">ფრჩხილს ადგილს ვუცვლით — ნამრავლი იგივე რჩება.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="განაწილება" data-time="7–18 წთ" data-note="დღის მთავარი წესი. ორივე გზა დაფაზე ერთად ჩაიწეროს: 5·13 და 5·9+5·4. მერე მოკლედ 6·(2+3+5).">
+  <div class="wrap">
+    <p class="eyebrow">თვისება 5 · დღის მთავარი</p>
+    <h2>განაწილება</h2>
+    <div class="paths">
+      <div class="path">
+        <p class="kicker">ჯერ ფრჩხილში</p>
+        <div class="eq">5 · (9 + 4) = 5 · 13 = 65</div>
+      </div>
+      <div class="path alt">
+        <p class="kicker">ცალ-ცალკე</p>
+        <div class="eq">5 · 9 + 5 · 4 = 45 + 20 = 65</div>
+      </div>
+    </div>
+    <div class="formula">a(b + c) = ab + ac</div>
+    <p class="fine">მარჯვნიდანაც იგივეა: (b + c)a = ba + ca. სამ შესაკრებზეც: 6 · (2 + 3 + 5) = 6·2 + 6·3 + 6·5 = 60.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="მსგავსი წევრები" data-time="7–18 წთ" data-note="9a+7a ერთად იკრიბება, რადგან განაწილება უკუღმა მუშაობს. 4a+5a კლასმა თქვას, მერე გახსენით.">
+  <div class="wrap">
+    <p class="eyebrow">იგივე თვისება, უკან</p>
+    <h2>ერთნაირი წევრები ერთად</h2>
+    <div class="eq xl">9a + 7a = (9 + 7)a = 16a</div>
+    <div class="tries">
+      <div class="try">4a + 5a = <button class="btn ghost" data-open="like">?</button><span id="like" class="shown" hidden>9a</span></div>
+    </div>
+    <p class="rule">გამოკლების დროსაც: a(b − c) = ab − ac.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="ნულების კიბე" data-time="18–26 წთ" data-note="კლასმა ერთად თქვას ყოველი საფეხური. ხაზი გაუსვით: ნული ბოლოში გადმოდის, შუაში არ ემატება.">
+  <div class="wrap">
+    <p class="eyebrow">ხრიკი</p>
+    <h2>ნულების კიბე</h2>
+    <div class="ladder">
+      <div><span>8 · 1</span><span>= 8</span></div>
+      <div><span>8 · 10</span><span>= 8<span class="zero">0</span></span></div>
+      <div><span>8 · 100</span><span>= 8<span class="zero">00</span></span></div>
+      <div><span>8 · 1 000</span><span>= 8<span class="zero">000</span></span></div>
+      <div><span>8 · 10 000</span><span>= 8<span class="zero">0 000</span></span></div>
+    </div>
+    <p class="rule">რამდენი ნულიცაა მამრავლის ბოლოში, იმდენი ნული ემატება ნამრავლს.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="ორივე მხარეს" data-time="18–26 წთ" data-note="ნაბიჯები სათითაოდ გახსენით. ბოლოს უთხარით, რომ ეს ნაცნობი თვისებაა: (5·10)·3 = (5·3)·10.">
+  <div class="wrap">
+    <p class="eyebrow">ხრიკი</p>
+    <h2>ნული ორივე მხარეს</h2>
+    <div class="eq xl">50 · 30 = ?</div>
+    <div class="steps" id="zeroSteps">
+      <p class="step" hidden>1. ნულებს ჯერ არ ვაქცევთ ყურადღებას: <b>5 · 3 = 15</b></p>
+      <p class="step" hidden>2. ნულები ორივე მხარეს ერთად: <b>ორი ნული</b></p>
+      <p class="step" hidden>3. 15-ს ორი ნული მივუწეროთ: <b>1 500</b></p>
+    </div>
+    <button class="btn" id="stepBtn" type="button">შემდეგი ნაბიჯი</button>
+    <p class="fine">ეს გადანაცვლება და ჯგუფების თვისებაა: (5 · 10) · 3 = (5 · 3) · 10.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="სცადე შენ" data-time="18–26 წთ" data-note="პასუხი არ გახსნათ, სანამ ორი მოსწავლე არ იტყვის: ჯერ ციფრები, მერე რამდენი ნული.">
+  <div class="wrap">
+    <p class="eyebrow">ხრიკი საქმეში</p>
+    <h2>ჯერ ციფრები, მერე ნულები</h2>
+    <div class="problems">
+      <div class="problem">
+        <div class="eq">50 · 300</div>
+        <button class="btn ghost" data-open="p1">პასუხი</button>
+        <span id="p1" class="shown" hidden>15 000</span>
+      </div>
+      <div class="problem">
+        <div class="eq">8 000 · 200</div>
+        <button class="btn ghost" data-open="p2">პასუხი</button>
+        <span id="p2" class="shown" hidden>1 600 000</span>
+      </div>
+      <div class="problem">
+        <div class="eq">9 000 · 7 000</div>
+        <button class="btn ghost" data-open="p3">პასუხი</button>
+        <span id="p3" class="shown" hidden>63 000 000</span>
+      </div>
+    </div>
+    <p class="fine">8 · 2 = 16 და ხუთი ნული. 9 · 7 = 63 და ექვსი ნული.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="სწორი კარი" data-time="26–34 წთ" data-note="ქულას ნუ სვამთ. გჭირდებათ ახსნა: რატომ ეს კარი. ვინც ადრე დაამთავრებს, წყვილში გვ. 57-ის დარჩენილ ნომერს ხსნის.">
+  <div class="wrap">
+    <p class="eyebrow">თამაში · სახელმძღვანელოს კითხვები</p>
+    <h2>სწორი კარი</h2>
+    <div id="quiz"></div>
+  </div>
+</section>
+
+<section class="slide" data-name="შეფასება" data-time="34–38 წთ" data-note="ჯერ კლასმა დაამრგვალოს, მერე გახსენით. ორივე რიცხვი ავწიეთ, ამიტომ ნამდვილი ნამრავლი 600 000-ზე ნაკლებია და 626 000-ზეც. თუ დრო დარჩა, მეორე ღილაკი: 238·41, ორივე დაკლებულია, ამიტომ ნამდვილი მეტია 8 000-ზე.">
+  <div class="wrap">
+    <p class="eyebrow">წვენის ქარხანა · გვ. 64</p>
+    <h2>მეტია თუ ნაკლები?</h2>
+    <p class="lead">26 700 ლიტრი წვენი, ყუთში 18 ლიტრი. ეს რაოდენობა 626 000-ზე მეტია თუ ნაკლები? ზუსტად ნუ ამრავლებთ.</p>
+    <div class="compare">
+      <div class="bubble">18 · 26 700</div>
+      <div class="qmark">?</div>
+      <div class="bubble">626 000</div>
+    </div>
+    <div class="tries">
+      <button class="btn" data-open="est">შევაფასოთ</button>
+      <button class="btn ghost" data-open="est2">კიდევ ერთი, თუ დროა</button>
+    </div>
+    <div id="est" hidden>
+      <div class="rounds">
+        <span class="chip">18 → <em>20</em></span>
+        <span class="chip">26 700 → <em>30 000</em></span>
+        <span class="chip">20 · 30 000 = <em>600 000</em></span>
+      </div>
+      <p class="rule">600 000 უკვე ნაკლებია 626 000-ზე. რიცხვები ავწიეთ, ამიტომ ნამდვილი ნამრავლი კიდევ უფრო მცირეა.</p>
+    </div>
+    <div id="est2" hidden>
+      <div class="rounds">
+        <span class="chip">238 → <em>200</em></span>
+        <span class="chip">41 → <em>40</em></span>
+        <span class="chip">200 · 40 = <em>8 000</em></span>
+      </div>
+      <p class="rule">ორივე რიცხვი დავაკელით, ამიტომ ნამდვილი ნამრავლი 8 000-ზე მეტია.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="სამი სიტყვა" data-time="38–40 წთ" data-note="სამი სიტყვა ერთად, მერე ერთმა მოსწავლემ დაასრულოს: „დღეს ვისწავლე…“. ერთი წინადადება საკმარისია.">
+  <div class="wrap">
+    <p class="eyebrow">დახურვა</p>
+    <h2>რა წაიღე დღეს?</h2>
+    <div class="words">
+      <div class="word"><span>1</span><strong>თვისება</strong></div>
+      <div class="word"><span>2</span><strong>ნული</strong></div>
+      <div class="word"><span>3</span><strong>დაახლოებით</strong></div>
+    </div>
+    <p class="rule">დაასრულე ერთი წინადადებით: დღეს ვისწავლე…</p>
+  </div>
+</section>
+
+<section class="slide" data-name="საშინაო" data-time="38–40 წთ" data-note="პასუხები, მხოლოდ თქვენ: 0; 56; 0. ნულებიანი: 15 000; 150 000; 1 500 000. სურვილისამებრ დაახლოებით 200 000.">
+  <div class="wrap">
+    <p class="eyebrow">სახლში</p>
+    <h2>საშინაო</h2>
+    <div class="hwlist">
+      <article class="hw">
+        <span class="n">1</span>
+        <p>გვ. 57, „კლასში“ — №1, №3, №4<br><small>0 · a &nbsp;·&nbsp; თუ a = 7, რას უდრის 8a? &nbsp;·&nbsp; თუ a = 0, რას უდრის 11a?</small></p>
+      </article>
+      <article class="hw">
+        <span class="n">2</span>
+        <p>გვ. 65 — ნულები<br><small>50 · 300 &nbsp;&nbsp; 50 · 3 000 &nbsp;&nbsp; 50 · 30 000</small></p>
+      </article>
+      <article class="hw">
+        <span class="n">3</span>
+        <p>სურვილისამებრ, გვ. 65, №4<br><small>2 430 · 97 დაამრგვალეთ უმაღლეს თანრიგამდე და იპოვეთ მიახლოებით.</small></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div><b id="footName">სათაური</b> · <span id="footTime"></span></div>
+  <div class="dots" id="dots"></div>
+  <div><span id="footCount">1 / 15</span> · <button class="btn ghost" id="helpBtn" type="button" style="padding:6px 12px">კლავიშები</button></div>
+</footer>
+
+<button class="edge prev" id="prev" type="button" aria-label="წინა სლაიდი">‹</button>
+<button class="edge next" id="next" type="button" aria-label="შემდეგი სლაიდი">›</button>
+
+<div class="help" id="help">
+  <article>
+    <h3>პრეზენტაციის მართვა</h3>
+    <p><kbd>→</kbd> <kbd>Space</kbd> შემდეგი &nbsp; <kbd>←</kbd> წინა</p>
+    <p><kbd>F</kbd> მთელი ეკრანი &nbsp; <kbd>T</kbd> მასწავლებლის შენიშვნა</p>
+    <p><kbd>Home</kbd> დასაწყისი &nbsp; <kbd>End</kbd> საშინაო</p>
+    <p>პასუხი იხსნება ღილაკით და კლასს წინასწარ არ უჩანს.</p>
+    <button class="btn" id="helpClose" type="button">გასაგებია</button>
+  </article>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll(".slide")];
+const bar = document.getElementById("bar");
+const footName = document.getElementById("footName");
+const footTime = document.getElementById("footTime");
+const footCount = document.getElementById("footCount");
+const dots = document.getElementById("dots");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+let index = 0;
+
+slides.forEach((slide, i) => {
+  const note = document.createElement("div");
+  note.className = "note";
+  note.innerHTML = "<small>მხოლოდ მასწავლებელი · T</small>" + slide.dataset.note;
+  slide.appendChild(note);
+  const dot = document.createElement("button");
+  dot.className = "dot";
+  dot.type = "button";
+  dot.setAttribute("aria-label", slide.dataset.name);
+  dot.addEventListener("click", (e) => { e.stopPropagation(); show(i); });
+  dots.appendChild(dot);
+});
+
+function show(i) {
+  index = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, n) => s.classList.toggle("active", n === index));
+  const s = slides[index];
+  footName.textContent = s.dataset.name;
+  footTime.textContent = s.dataset.time;
+  footCount.textContent = (index + 1) + " / " + slides.length;
+  bar.style.width = ((index + 1) / slides.length * 100) + "%";
+  [...dots.children].forEach((d, n) => d.classList.toggle("on", n === index));
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === slides.length - 1;
+  document.querySelector(".bigx").style.display = index === 0 ? "block" : "none";
+}
+
+function next() { show(index + 1); }
+function prev() { show(index - 1); }
+
+prevBtn.addEventListener("click", (e) => { e.stopPropagation(); prev(); });
+nextBtn.addEventListener("click", (e) => { e.stopPropagation(); next(); });
+
+document.addEventListener("keydown", (e) => {
+  const help = document.getElementById("help");
+  if (e.key === "Escape") { help.classList.remove("open"); return; }
+  if (help.classList.contains("open")) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); next(); }
+  else if (e.key === "ArrowLeft" || e.key === "PageUp" || e.key === "Backspace") { e.preventDefault(); prev(); }
+  else if (e.key === " " && e.target.tagName !== "BUTTON") { e.preventDefault(); next(); }
+  else if (e.key === "Home") { show(0); }
+  else if (e.key === "End") { show(slides.length - 1); }
+  else if (e.key === "f" || e.key === "F") {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  } else if (e.key === "t" || e.key === "T") {
+    document.body.classList.toggle("show-notes");
+  }
+});
+
+document.querySelectorAll("[data-open]").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const el = document.getElementById(btn.dataset.open);
+    el.hidden = false;
+    btn.hidden = true;
+  });
+});
+
+const swapBtn = document.getElementById("swapBtn");
+swapBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const a = document.querySelector("[data-a]");
+  const b = document.querySelector("[data-b]");
+  const t = a.textContent;
+  a.textContent = b.textContent;
+  b.textContent = t;
+  a.animate([{ transform: "scale(1.08)" }, { transform: "none" }], { duration: 220 });
+});
+
+const steps = [...document.querySelectorAll("#zeroSteps .step")];
+let stepAt = 0;
+document.getElementById("stepBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (stepAt < steps.length) {
+    steps[stepAt].hidden = false;
+    stepAt += 1;
+    if (stepAt === steps.length) e.currentTarget.hidden = true;
+  }
+});
+
+const questions = [
+  {
+    q: "27 + 27 + 27 + 27 + 27 =",
+    options: ["5 · 27", "5 + 27", "4 · 27", "3 · 27"],
+    answer: 0,
+    why: "ხუთი ერთნაირი შესაკრები — ეს 5 · 27-ია."
+  },
+  {
+    q: "თუ a = 0, მაშინ 11a =",
+    options: ["2", "110", "0", "10"],
+    answer: 2,
+    why: "ნულის თვისება: ნულზე გამრავლება ნულს იძლევა."
+  },
+  {
+    q: "7(a + c) =",
+    options: ["7a", "7c", "7a + 7c", "7a + 7"],
+    answer: 2,
+    why: "განაწილება: შვიდი ორივე შესაკრებზე მრავლდება."
+  },
+  {
+    q: "400 · 70 =",
+    options: ["280", "11 000", "28 000", "28 770"],
+    answer: 2,
+    why: "4 · 7 = 28 და სამი ნული — 28 000."
+  }
+];
+
+const quiz = document.getElementById("quiz");
+let qIndex = 0;
+let score = 0;
+let locked = false;
+
+function renderQuestion() {
+  locked = false;
+  const item = questions[qIndex];
+  quiz.innerHTML = "";
+  const top = document.createElement("div");
+  top.className = "quiz-top";
+  top.innerHTML = "<p class='qtext'></p><span class='fine'></span>";
+  top.querySelector(".qtext").textContent = item.q;
+  top.querySelector("span").textContent = "კითხვა " + (qIndex + 1) + " / " + questions.length;
+  const options = document.createElement("div");
+  options.className = "options";
+  item.options.forEach((text, i) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.type = "button";
+    b.textContent = text;
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (locked) return;
+      locked = true;
+      const good = i === item.answer;
+      if (good) score += 1;
+      [...options.children].forEach((opt, n) => {
+        opt.disabled = true;
+        if (n === item.answer) opt.classList.add("good");
+        if (n === i && !good) opt.classList.add("bad");
+      });
+      why.textContent = (good ? "სწორია. " : "სწორი სხვა კარია. ") + item.why;
+      nextQ.hidden = false;
+    });
+    options.appendChild(b);
+  });
+  const why = document.createElement("p");
+  why.className = "why";
+  const nextQ = document.createElement("button");
+  nextQ.className = "btn";
+  nextQ.type = "button";
+  nextQ.hidden = true;
+  nextQ.textContent = qIndex === questions.length - 1 ? "შედეგი" : "შემდეგი კარი";
+  nextQ.addEventListener("click", (e) => {
+    e.stopPropagation();
+    qIndex += 1;
+    if (qIndex >= questions.length) renderScore();
+    else renderQuestion();
+  });
+  quiz.append(top, options, why, nextQ);
+}
+
+function renderScore() {
+  quiz.innerHTML = "";
+  const box = document.createElement("div");
+  box.className = "score";
+  const title = document.createElement("strong");
+  title.textContent = score + " / " + questions.length;
+  const msg = document.createElement("p");
+  msg.className = "lead";
+  msg.textContent = score >= 3
+    ? "კარგი ტემპია. ნული და თვისება უკვე ერთმანეთს უკავშირდება."
+    : "ერთად გადავხედოთ იმ კარს, რომელიც სხვა იყო — ნული ან განაწილება.";
+  const again = document.createElement("button");
+  again.className = "btn ghost";
+  again.type = "button";
+  again.textContent = "თავიდან";
+  again.addEventListener("click", (e) => {
+    e.stopPropagation();
+    qIndex = 0;
+    score = 0;
+    renderQuestion();
+  });
+  box.append(title, msg, again);
+  quiz.appendChild(box);
+}
+
+renderQuestion();
+
+const help = document.getElementById("help");
+document.getElementById("helpBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  help.classList.add("open");
+});
+document.getElementById("helpClose").addEventListener("click", (e) => {
+  e.stopPropagation();
+  help.classList.remove("open");
+});
+help.addEventListener("click", (e) => { if (e.target === help) help.classList.remove("open"); });
+
+const params = new URLSearchParams(location.search);
+const start = parseInt(params.get("slide") || "1", 10);
+show(Number.isFinite(start) ? start - 1 : 0);
+</script>
+</body>
+</html>
