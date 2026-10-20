@@ -285,6 +285,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
   min-height: 150px;
 }
 .problem .eq { font-size: 1.7rem; }
+.problems.tight { gap: 10px; }
+.problems.tight .problem { min-height: 0; padding: 12px 10px; gap: 8px; }
 
 .quiz-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .qtext { font-family: var(--serif); font-size: clamp(1.7rem, 3vw, 2.5rem); margin: 0; }
@@ -778,11 +780,11 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="სამი სახელი" data-note="ჯერ ჰკითხეთ, სად არის ტოლობის ნიშანი. მერე გახსენით სახელები.">
+<section class="slide" data-name="სამი სახელი" data-note="ჯერ ჰკითხეთ, სად არის ტოლობის ნიშანი. ზედა რიგი 8a-ზეა, ქვედა 9a+7a-ზე. სახელები მერე გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">გამოსახულება, ტოლობა, უტოლობა</p>
     <h2>სამი სხვადასხვა რამ</h2>
-    <div class="problems">
+    <div class="problems tight">
       <div class="problem">
         <div class="eq">8a</div>
         <button class="btn ghost" data-open="k1" type="button">რა არის?</button>
@@ -798,8 +800,23 @@ kbd {
         <button class="btn ghost" data-open="k3" type="button">რა არის?</button>
         <span id="k3" class="shown" hidden>უტოლობა</span>
       </div>
+      <div class="problem">
+        <div class="eq">9a + 7a</div>
+        <button class="btn ghost" data-open="k4" type="button">რა არის?</button>
+        <span id="k4" class="shown" hidden>გამოსახულება</span>
+      </div>
+      <div class="problem">
+        <div class="eq">9a + 7a = 16a</div>
+        <button class="btn ghost" data-open="k5" type="button">რა არის?</button>
+        <span id="k5" class="shown" hidden>ტოლობა</span>
+      </div>
+      <div class="problem">
+        <div class="eq">16a &gt; 10a</div>
+        <button class="btn ghost" data-open="k6" type="button">რა არის?</button>
+        <span id="k6" class="shown" hidden>უტოლობა</span>
+      </div>
     </div>
-    <p class="rule">გამოსახულებას = არ აქვს. ტოლობას აქვს =. უტოლობას აქვს &gt; ან &lt;.</p>
+    <p class="rule">გამოსახულებას = არ აქვს. ტოლობას აქვს =. უტოლობას აქვს &gt; ან &lt;. 9a + 7a = 16a განრიგებადობიდან მოდის.</p>
   </div>
 </section>
 
