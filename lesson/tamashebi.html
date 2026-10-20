@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>სამი თამაში — V კლასი</title>
+<style>
+@font-face { font-family: "Noto Sans Georgian"; src: url("fonts/NotoSansGeorgian-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans Georgian"; src: url("fonts/NotoSansGeorgian-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Serif Georgian"; src: url("fonts/NotoSerifGeorgian-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Serif Georgian"; src: url("fonts/NotoSerifGeorgian-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+:root {
+  --ink: #1c2430; --muted: #5e6872; --paper: #f6f1e7; --line: #eadfce;
+  --maroon: #8e2f3c; --teal: #0f7a6e; --gold: #d99a16; --coral: #e15a42; --green: #1c7d45;
+  --shadow: 0 14px 40px rgba(48, 32, 18, 0.08);
+  --serif: "Noto Serif Georgian", "Noto Sans Georgian", Sylfaen, sans-serif;
+  --sans: "Noto Sans Georgian", Sylfaen, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+[hidden] { display: none !important; }
+main { min-height: 100vh; min-height: 100dvh; padding: 22px 48px 20px; }
+.wrap { width: min(1040px, 100%); margin: auto; display: flex; flex-direction: column; gap: 12px; }
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.eyebrow { margin: 0; color: var(--maroon); font-weight: 700; }
+h1, h2 { font-family: var(--serif); margin: 0; line-height: 1.12; }
+h1 { font-size: clamp(2rem, 4vw, 3.2rem); }
+h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); }
+.meta { margin: 0; text-align: right; color: var(--muted); font-weight: 700; }
+.meta b { display: block; color: var(--ink); font-size: 1.25rem; }
+.lead { margin: 0; color: var(--muted); font-size: 1.15rem; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.card {
+  text-align: left; font-family: inherit; cursor: pointer;
+  background: white; border: 1px solid var(--line); border-radius: 20px;
+  box-shadow: var(--shadow); padding: 18px 16px; display: grid; gap: 8px;
+}
+.card b { font-family: var(--serif); font-size: 1.45rem; }
+.card span { color: var(--muted); font-size: 1rem; }
+.card:hover { border-color: var(--teal); }
+.card:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.btn, .opt, .num, .pad {
+  font-family: inherit; cursor: pointer; font-weight: 700;
+}
+.btn {
+  border: 2px solid transparent; background: var(--maroon); color: white;
+  border-radius: 999px; padding: 9px 16px; font-size: 1rem; width: fit-content;
+}
+.btn.ghost { background: white; color: var(--ink); border-color: var(--line); }
+.btn.ghost.on { background: var(--teal); color: white; border-color: var(--teal); }
+.btn:disabled { opacity: .4; cursor: default; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.fine { margin: 0; color: var(--muted); }
+.why {
+  margin: 0; min-height: 2.8rem; background: #fff6df; border-left: 6px solid var(--gold);
+  border-radius: 14px; padding: 10px 14px; font-weight: 700;
+}
+.prompt {
+  margin: 0; background: white; border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: var(--shadow); padding: 12px 14px; font-weight: 700; font-size: 1.25rem;
+}
+.show { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); margin: 0; }
+.opts { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.opt {
+  text-align: left; background: white; border: 2px solid var(--line); border-radius: 14px;
+  padding: 12px 14px; font-size: 1.25rem; box-shadow: var(--shadow);
+}
+.opt.good { background: #e7f6f1; border-color: var(--teal); }
+.opt.bad { background: #fdecea; border-color: var(--coral); }
+.pond { position: relative; padding: 54px 4px 0; }
+.bar { position: absolute; left: 24px; right: 24px; top: 74px; height: 5px; background: var(--maroon); border-radius: 5px; }
+.bar::after { content: ""; position: absolute; right: -12px; top: -8px; border: 10px solid transparent; border-left: 16px solid var(--maroon); }
+.frog { position: absolute; top: 18px; width: 46px; height: 46px; margin-left: -23px; z-index: 2; pointer-events: none; transition: left .4s ease; }
+.frog .body { position: absolute; left: 1px; bottom: 0; width: 44px; height: 34px; background: var(--green); border-radius: 50% 50% 46% 46%; }
+.frog .eye { position: absolute; top: 2px; width: 13px; height: 13px; background: white; border: 2px solid #145c32; border-radius: 50%; }
+.frog .eye::after { content: ""; position: absolute; width: 5px; height: 5px; background: var(--ink); border-radius: 50%; top: 3px; left: 3px; }
+.frog .eye.l { left: 8px; } .frog .eye.r { right: 8px; }
+.pads { display: flex; justify-content: space-between; }
+.pad { width: 46px; border: 0; background: transparent; padding: 0; color: var(--ink); }
+.pad i { display: block; width: 22px; height: 18px; margin: 8px auto; border-radius: 50%; background: #d8f3df; border: 3px solid #2f9e44; }
+.pad b { display: block; font-size: 1rem; }
+.pad.here i { background: var(--gold); border-color: #a8740c; }
+.pad.good i { background: var(--teal); border-color: var(--teal); }
+.pad.bad i { background: #f0b4a8; border-color: var(--maroon); }
+.stage { display: grid; grid-template-columns: 120px 1fr; gap: 14px; align-items: center; }
+.chest { height: 108px; border-radius: 20px; background: var(--ink); color: white; display: grid; place-items: center; font-family: var(--serif); font-size: 2.6rem; }
+.chest.open { background: var(--teal); }
+.clues { display: grid; gap: 8px; }
+.clue { margin: 0; background: white; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; font-weight: 700; }
+.clue.ok { border-color: var(--teal); background: #e7f6f1; }
+.clue.bad { border-color: var(--coral); background: #fdecea; }
+.grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; }
+.num { background: white; border: 2px solid var(--line); border-radius: 10px; padding: 7px 0; font-size: 1.05rem; }
+.num.good { background: var(--teal); color: white; border-color: var(--teal); }
+.num.bad { background: #fdecea; border-color: var(--coral); }
+.note { position: fixed; left: 16px; right: 16px; bottom: 10px; background: var(--ink); color: white; border-radius: 14px; padding: 12px 14px; display: none; z-index: 5; }
+body.show-notes .note { display: block; }
+.note small { display: block; color: #f0c36a; font-weight: 700; margin-bottom: 4px; }
+@media (max-width: 800px) {
+  main { padding: 14px; }
+  .cards, .stage { grid-template-columns: 1fr; }
+  .pad { width: 22px; } .pad b { font-size: .7rem; } .pad i { width: 16px; height: 14px; }
+  .num { font-size: .85rem; padding: 6px 0; }
+}
+</style>
+</head>
+<body>
+<main id="home">
+  <div class="wrap">
+    <p class="eyebrow">მათემატიკა · V კლასი</p>
+    <h1>სამი თამაში</h1>
+    <p class="lead">აირჩიე ერთი. პასუხი მანამდე არ ჩანს, სანამ კლასი თვითონ არ დააჭერს. T შენიშვნას ხსნის.</p>
+    <div class="cards">
+      <button class="card" type="button" data-open="ray"><b>ბაყაყი სხივზე</b><span>ნატურალური რიცხვი ფოთოლზე. ნაბიჯი წინ, უკან და შუა წერტილი.</span></button>
+      <button class="card" type="button" data-open="lock"><b>საიდუმლო რიცხვი</b><span>სამი პირობა, ერთი რიცხვი 1-დან 36-მდე.</span></button>
+      <button class="card" type="button" data-open="pair"><b>ორი ჩანაწერი</b><span>იგივე ნამრავლი. გადანაცვლებადობა, ჯუფთებადობა, განრიგებადობა.</span></button>
+    </div>
+  </div>
+</main>
+
+<main id="ray" hidden>
+  <div class="wrap">
+    <div class="top">
+      <div><p class="eyebrow">ნატურალური რიცხვები</p><h2>ბაყაყი სხივზე</h2></div>
+      <p class="meta">ნახტომი <b id="rayCount">1 / 6</b></p>
+    </div>
+    <p class="prompt" id="rayPrompt"></p>
+    <div class="pond" id="pond">
+      <div class="bar"></div>
+      <div class="frog" id="frog"><span class="eye l"></span><span class="eye r"></span><span class="body"></span></div>
+      <div class="pads" id="pads"></div>
+    </div>
+    <p class="why" id="rayWhy"></p>
+    <div class="row">
+      <button class="btn ghost" type="button" data-open="home">თამაშები</button>
+      <button class="btn" id="rayNext" type="button" disabled>შემდეგი ნახტომი</button>
+      <button class="btn ghost on" id="rayEasy" type="button">ადვილი</button>
+      <button class="btn ghost" id="rayHard" type="button">რთული</button>
+      <p class="fine" id="rayFound">ნაპოვნი ფოთოლი: 0</p>
+    </div>
+  </div>
+</main>
+
+<main id="lock" hidden>
+  <div class="wrap">
+    <div class="top">
+      <div><p class="eyebrow">ნატურალური რიცხვები</p><h2>საიდუმლო რიცხვი</h2></div>
+      <p class="meta">სკივრი <b id="lockCount">1 / 6</b></p>
+    </div>
+    <div class="stage">
+      <div class="chest" id="chest">?</div>
+      <div class="clues" id="clues"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="why" id="lockWhy"></p>
+    <div class="row">
+      <button class="btn ghost" type="button" data-open="home">თამაშები</button>
+      <button class="btn" id="lockNext" type="button" disabled>შემდეგი სკივრი</button>
+      <button class="btn ghost on" id="lockEasy" type="button">ადვილი</button>
+      <button class="btn ghost" id="lockHard" type="button">რთული</button>
+      <p class="fine" id="lockFound">გახსნილი სკივრი: 0</p>
+    </div>
+  </div>
+</main>
+
+<main id="pair" hidden>
+  <div class="wrap">
+    <div class="top">
+      <div><p class="eyebrow">გამრავლების თვისებები</p><h2>ორი ჩანაწერი</h2></div>
+      <p class="meta">წყვილი <b id="pairCount">1 / 8</b></p>
+    </div>
+    <p class="lead">რომელი ჩანაწერია იგივე ნამრავლი?</p>
+    <p class="show" id="pairShow"></p>
+    <div class="opts" id="opts"></div>
+    <p class="why" id="pairWhy"></p>
+    <div class="row">
+      <button class="btn ghost" type="button" data-open="home">თამაშები</button>
+      <button class="btn" id="pairNext" type="button" disabled>შემდეგი</button>
+      <p class="fine" id="pairFound">სწორი წყვილი: 0</p>
+    </div>
+  </div>
+</main>
+<div class="note"><small>მასწავლებლისთვის · T</small><span id="noteText"></span></div>
+<script>
+const noteText = document.getElementById("noteText");
+document.querySelectorAll("[data-open]").forEach((btn) => {
+  btn.addEventListener("click", () => showMain(btn.dataset.open));
+});
+function showMain(id) {
+  document.querySelectorAll("main").forEach((m) => { m.hidden = m.id !== id; });
+  if (id === "ray") startRay(rayLevel);
+  if (id === "lock") startLock(lockLevel);
+  if (id === "pair") startPair();
+  if (id === "home") noteText.textContent = "სამი თამაში ცალ-ცალკე იხსნება. ჯერ ადვილი, მერე რთული.";
+}
+
+const raySets = {
+  easy: [
+    { from: 0, ans: 3, q: "ბაყაყი საწყისზე ზის და 3 ნაბიჯს ხტება მარჯვნივ. სად დაჯდა?", why: "0-დან სამი ნაბიჯია. 3." },
+    { from: 3, ans: 7, q: "იქიდან კიდევ 4 ნაბიჯი მარჯვნივ. სად არის ახლა?", why: "3 + 4 = 7." },
+    { from: 0, ans: 6, q: "საწყისიდან ორი ერთნაირი ნახტომი, თითო 3 ნაბიჯი. სად დაჯდა?", why: "3 + 3 = 6." },
+    { from: 2, ans: 7, q: "2-ზე ზის და კიდევ 5 ნაბიჯით შორდება საწყისს. სად არის?", why: "2 + 5 = 7." },
+    { from: 4, ans: 8, q: "4-ზეა და საწყისიდან ორჯერ შორს უნდა აღმოჩნდეს. სად დაჯდება?", why: "2 · 4 = 8." },
+    { from: 1, ans: 5, q: "1-სა და 9-ს ზუსტ შუაში რომელ ნატურალურ რიცხვზე დგას ფოთოლი?", why: "შუა 5-ია, რადგან 1 + 4 = 5." }
+  ],
+  hard: [
+    { from: 0, ans: 9, q: "საწყისიდან 3 ნაბიჯი, იქიდან კიდევ ორჯერ იმდენი. სად დაჯდა?", why: "3 + 6 = 9." },
+    { from: 11, ans: 6, q: "11-ზე ზის და 5 ნაბიჯით უკან ბრუნდება. სად არის?", why: "11 − 5 = 6." },
+    { from: 1, ans: 10, q: "1-დან ზედიზედ 2, მერე 3, მერე 4 ნაბიჯი. სად დაჯდა?", why: "1 + 2 + 3 + 4 = 10." },
+    { from: 2, ans: 5, q: "2-დან 6 ნაბიჯი წინ, მერე 3 უკან. სად გაჩერდა?", why: "2 + 6 − 3 = 5." },
+    { from: 12, ans: 6, q: "12-ზე ზის და საწყისიდან ორჯერ ახლოს უნდა დადგეს. სად?", why: "12-ის ნახევარი 6-ია." },
+    { from: 3, ans: 8, q: "3-სა და 11-ს შუა, მერე ერთი ნაბიჯი მარჯვნივ. სად ხარ?", why: "შუა 7-ია. კიდევ ერთი ნაბიჯი 8-ია." }
+  ]
+};
+const pads = document.getElementById("pads");
+const frog = document.getElementById("frog");
+let rayLevel = "easy", rayRounds = raySets.easy, rayStep = 0, rayLock = false, rayScore = 0, raySpot = 0;
+for (let n = 0; n <= 12; n++) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "pad"; b.dataset.n = String(n);
+  b.innerHTML = "<i></i><b>" + n + "</b>";
+  b.addEventListener("click", () => rayChoose(n));
+  pads.appendChild(b);
+}
+function rayPad(n) { return pads.querySelector('[data-n="' + n + '"]'); }
+function placeFrog(n) {
+  const leaf = rayPad(n).querySelector("i");
+  const pond = document.getElementById("pond");
+  const x = leaf.getBoundingClientRect().left - pond.getBoundingClientRect().left + leaf.offsetWidth / 2;
+  frog.style.left = x + "px";
+  pads.querySelectorAll(".pad").forEach((p) => p.classList.remove("here"));
+  rayPad(n).classList.add("here");
+  raySpot = n;
+}
+function showRay() {
+  const r = rayRounds[rayStep];
+  rayLock = false;
+  document.getElementById("rayNext").disabled = true;
+  document.getElementById("rayPrompt").textContent = r.q;
+  document.getElementById("rayWhy").textContent = "დააჭირე ფოთოლს.";
+  document.getElementById("rayCount").textContent = (rayStep + 1) + " / " + rayRounds.length;
+  pads.querySelectorAll(".pad").forEach((p) => p.classList.remove("good", "bad"));
+  placeFrog(r.from);
+  noteText.textContent = "პასუხი " + r.ans + ". " + r.why;
+}
+function rayChoose(n) {
+  if (rayLock || document.getElementById("ray").hidden) return;
+  const r = rayRounds[rayStep];
+  if (n !== r.ans) {
+    const pad = rayPad(n);
+    pad.classList.remove("bad"); void pad.offsetWidth; pad.classList.add("bad");
+    document.getElementById("rayWhy").textContent = "ეს ფოთოლი არ არის. ნაბიჯები საწყისიდან დათვალე.";
+    return;
+  }
+  rayLock = true;
+  rayScore += 1;
+  document.getElementById("rayFound").textContent = "ნაპოვნი ფოთოლი: " + rayScore;
+  rayPad(n).classList.add("good");
+  placeFrog(n);
+  document.getElementById("rayWhy").textContent = r.why;
+  document.getElementById("rayNext").disabled = rayStep === rayRounds.length - 1;
+}
+function startRay(name) {
+  rayLevel = name;
+  rayRounds = raySets[name];
+  rayStep = 0; rayScore = 0;
+  document.getElementById("rayFound").textContent = "ნაპოვნი ფოთოლი: 0";
+  document.getElementById("rayEasy").classList.toggle("on", name === "easy");
+  document.getElementById("rayHard").classList.toggle("on", name === "hard");
+  showRay();
+}
+document.getElementById("rayNext").addEventListener("click", () => { if (rayStep < rayRounds.length - 1) { rayStep += 1; showRay(); } });
+document.getElementById("rayEasy").addEventListener("click", () => startRay("easy"));
+document.getElementById("rayHard").addEventListener("click", () => startRay("hard"));
+
+const digitSum = (n) => String(n).split("").reduce((s, d) => s + Number(d), 0);
+const sameDigits = (n) => { const s = String(n); return s.length === 2 && s[0] === s[1]; };
+const cube = (n) => { const c = Math.round(Math.cbrt(n)); return c > 1 && c * c * c === n; };
+const lockSets = {
+  easy: [
+    { ans: 15, clues: ["5-ის ჯერადია", "12-ზე დიდია", "20-ზე პატარაა"], why: "რჩება 15.", rules: [n => n % 5 === 0, n => n > 12, n => n < 20] },
+    { ans: 21, clues: ["კენტია", "3-ის ჯერადია", "20-სა და 25-ს შორისაა"], why: "ამ შუალედში 3-ის ჯერადი კენტი 21-ია.", rules: [n => n % 2 === 1, n => n % 3 === 0, n => n > 20 && n < 25] },
+    { ans: 22, clues: ["ორი ციფრი ერთნაირია", "15-ზე დიდია", "30-ზე პატარაა"], why: "11 პატარაა, 33 დიდი. რჩება 22.", rules: [sameDigits, n => n > 15, n => n < 30] },
+    { ans: 16, clues: ["8-ის ჯერადია", "10-ზე დიდია", "20-ზე პატარაა"], why: "რჩება 16.", rules: [n => n % 8 === 0, n => n > 10, n => n < 20] },
+    { ans: 30, clues: ["10-ის ჯერადია", "25-ზე დიდია", "36-მდეა"], why: "30.", rules: [n => n % 10 === 0, n => n > 25, n => n <= 36] },
+    { ans: 18, clues: ["ლუწია", "9-ის ჯერადია", "10-ზე დიდია და 20-ზე პატარაა"], why: "18.", rules: [n => n % 2 === 0, n => n % 9 === 0, n => n > 10 && n < 20] }
+  ],
+  hard: [
+    { ans: 24, clues: ["3-ზეც იყოფა", "8-ზეც იყოფა", "20-ზე დიდია და 30-ზე პატარაა"], why: "24 იყოფა 3-ზეც და 8-ზეც.", rules: [n => n % 3 === 0, n => n % 8 === 0, n => n > 20 && n < 30] },
+    { ans: 35, clues: ["5-ის ჯერადია", "ციფრების ჯამი 8-ია", "ორნიშნაა"], why: "35. ციფრები 3 და 5.", rules: [n => n % 5 === 0, n => digitSum(n) === 8, n => n >= 10] },
+    { ans: 27, clues: ["სამი ერთნაირი რიცხვის ნამრავლია", "10-ზე დიდია", "30-ზე პატარაა"], why: "3 · 3 · 3 = 27.", rules: [cube, n => n > 10, n => n < 30] },
+    { ans: 36, clues: ["ლუწია", "9-ის ჯერადია", "30-ზე დიდია"], why: "36.", rules: [n => n % 2 === 0, n => n % 9 === 0, n => n > 30] },
+    { ans: 28, clues: ["7-ზე ზუსტად 4-ჯერ დიდია", "ლუწია", "30-ზე პატარაა"], why: "4 · 7 = 28.", rules: [n => n === 28, n => n % 2 === 0, n => n < 30] },
+    { ans: 32, clues: ["8-ის ჯერადია", "30-ზე დიდია", "ციფრების ჯამი 5-ია"], why: "32. ციფრების ჯამი 5-ია.", rules: [n => n % 8 === 0, n => n > 30, n => digitSum(n) === 5] }
+  ]
+};
+for (const set of Object.values(lockSets)) {
+  for (const round of set) {
+    const hits = [];
+    for (let n = 1; n <= 36; n++) if (round.rules.every((t) => t(n))) hits.push(n);
+    if (hits.length !== 1 || hits[0] !== round.ans) throw new Error("სკივრი აერია: " + round.ans);
+  }
+}
+const grid = document.getElementById("grid");
+const cluesEl = document.getElementById("clues");
+let lockLevel = "easy", lockRounds = lockSets.easy, lockStep = 0, lockOn = false, lockScore = 0;
+for (let n = 1; n <= 36; n++) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "num"; b.textContent = String(n);
+  b.addEventListener("click", () => lockChoose(n, b));
+  grid.appendChild(b);
+}
+function showLock() {
+  const r = lockRounds[lockStep];
+  lockOn = false;
+  document.getElementById("lockNext").disabled = true;
+  document.getElementById("chest").textContent = "?";
+  document.getElementById("chest").classList.remove("open");
+  document.getElementById("lockCount").textContent = (lockStep + 1) + " / " + lockRounds.length;
+  document.getElementById("lockWhy").textContent = "სამივე პირობა ერთად წაიკითხე.";
+  cluesEl.innerHTML = "";
+  r.clues.forEach((text) => { const p = document.createElement("p"); p.className = "clue"; p.textContent = text; cluesEl.appendChild(p); });
+  grid.querySelectorAll(".num").forEach((b) => b.classList.remove("good", "bad"));
+  noteText.textContent = "პასუხი " + r.ans + ". " + r.why;
+}
+function lockChoose(n, btn) {
+  if (lockOn || document.getElementById("lock").hidden) return;
+  const r = lockRounds[lockStep];
+  const marks = r.rules.map((t) => t(n));
+  cluesEl.querySelectorAll(".clue").forEach((el, i) => { el.classList.toggle("ok", marks[i]); el.classList.toggle("bad", !marks[i]); });
+  if (n !== r.ans) {
+    btn.classList.remove("bad"); void btn.offsetWidth; btn.classList.add("bad");
+    document.getElementById("lockWhy").textContent = "ეს რიცხვი ყველა პირობას არ ერგება.";
+    return;
+  }
+  lockOn = true; lockScore += 1;
+  document.getElementById("lockFound").textContent = "გახსნილი სკივრი: " + lockScore;
+  btn.classList.add("good");
+  document.getElementById("chest").textContent = String(n);
+  document.getElementById("chest").classList.add("open");
+  document.getElementById("lockWhy").textContent = r.why;
+  document.getElementById("lockNext").disabled = lockStep === lockRounds.length - 1;
+}
+function startLock(name) {
+  lockLevel = name; lockRounds = lockSets[name]; lockStep = 0; lockScore = 0;
+  document.getElementById("lockFound").textContent = "გახსნილი სკივრი: 0";
+  document.getElementById("lockEasy").classList.toggle("on", name === "easy");
+  document.getElementById("lockHard").classList.toggle("on", name === "hard");
+  showLock();
+}
+document.getElementById("lockNext").addEventListener("click", () => { if (lockStep < lockRounds.length - 1) { lockStep += 1; showLock(); } });
+document.getElementById("lockEasy").addEventListener("click", () => startLock("easy"));
+document.getElementById("lockHard").addEventListener("click", () => startLock("hard"));
+
+const pairRounds = [
+  { show: "6 · 5", choices: ["6 + 5", "5 · 6", "6 · 6"], ans: 1, why: "გადანაცვლებადობის თვისება. მამრავლების გაცვლა ნამრავლს არ ცვლის. ორივე 30-ია." },
+  { show: "(3 · 4) · 5", choices: ["3 · (4 · 5)", "(3 + 4) · 5", "3 · 4 + 5"], ans: 0, why: "ჯუფთებადობის თვისება. ფრჩხილის ადგილი ნამრავლს არ ცვლის. ორივე 60-ია." },
+  { show: "5 · (9 + 4)", choices: ["5 + 9 + 4", "5 · 9 · 4", "5 · 9 + 5 · 4"], ans: 2, why: "განრიგებადობის თვისება. a(b + c) = ab + ac. ორივე 65-ია." },
+  { show: "9a + 7a", choices: ["97a", "(9 + 7)a", "9 · 7 · a"], ans: 1, why: "განრიგებადობის თვისება უკან. საერთო მამრავლი ფრჩხილებს გარეთ გადის: (9 + 7)a = 16a." },
+  { show: "7(a + c)", choices: ["7a + c", "(a + c) · 7", "a + 7c"], ans: 1, why: "გადანაცვლებადობის თვისება. 7(a + c) და (a + c) · 7 ერთი და იგივეა." },
+  { show: "8 · 1", choices: ["8 + 1", "81", "8"], ans: 2, why: "ერთზე გამრავლება რიცხვს არ ცვლის. ეს სამ თვისებაში არ შედის." },
+  { show: "0 · a", choices: ["a", "0", "0 + a"], ans: 1, why: "ნულზე გამრავლება ნულს იძლევა. 0 · a = 0." },
+  { show: "4a + 5a", choices: ["45a", "9a", "4 · 5 · a"], ans: 1, why: "ისევ განრიგებადობაა. (4 + 5)a = 9a." }
+];
+const opts = document.getElementById("opts");
+let pairStep = 0, pairOn = false, pairScore = 0;
+function showPair() {
+  const r = pairRounds[pairStep];
+  pairOn = false;
+  document.getElementById("pairNext").disabled = true;
+  document.getElementById("pairShow").textContent = r.show;
+  document.getElementById("pairCount").textContent = (pairStep + 1) + " / " + pairRounds.length;
+  document.getElementById("pairWhy").textContent = "აირჩიე იგივე ნამრავლის ჩანაწერი.";
+  opts.innerHTML = "";
+  r.choices.forEach((text, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "opt"; b.textContent = text;
+    b.addEventListener("click", () => pairChoose(i, b));
+    opts.appendChild(b);
+  });
+  noteText.textContent = "პასუხი: " + r.choices[r.ans] + ". " + r.why;
+}
+function pairChoose(i, btn) {
+  if (pairOn) return;
+  const r = pairRounds[pairStep];
+  if (i !== r.ans) {
+    btn.classList.add("bad");
+    document.getElementById("pairWhy").textContent = "ეს იგივე ჩანაწერი არ არის. მეორედ სცადე.";
+    return;
+  }
+  pairOn = true; pairScore += 1;
+  btn.classList.add("good");
+  document.getElementById("pairFound").textContent = "სწორი წყვილი: " + pairScore;
+  document.getElementById("pairWhy").textContent = r.why;
+  document.getElementById("pairNext").disabled = pairStep === pairRounds.length - 1;
+}
+function startPair() { pairStep = 0; pairScore = 0; document.getElementById("pairFound").textContent = "სწორი წყვილი: 0"; showPair(); }
+document.getElementById("pairNext").addEventListener("click", () => { if (pairStep < pairRounds.length - 1) { pairStep += 1; showPair(); } });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "t" || e.key === "T") document.body.classList.toggle("show-notes");
+});
+window.addEventListener("resize", () => { if (!document.getElementById("ray").hidden) placeFrog(raySpot); });
+noteText.textContent = "სამი თამაში ცალ-ცალკე იხსნება.";
+</script>
+</body>
+</html>

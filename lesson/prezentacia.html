@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>გამრავლების თვისებები — V კლასი</title>
+<style>
+@font-face {
+  font-family: "Noto Sans Georgian";
+  src: url("fonts/NotoSansGeorgian-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans Georgian";
+  src: url("fonts/NotoSansGeorgian-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Serif Georgian";
+  src: url("fonts/NotoSerifGeorgian-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Serif Georgian";
+  src: url("fonts/NotoSerifGeorgian-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #1c2430;
+  --muted: #5e6872;
+  --paper: #f6f1e7;
+  --card: #fffdf9;
+  --line: #eadfce;
+  --maroon: #8e2f3c;
+  --coral: #e15a42;
+  --teal: #0f7a6e;
+  --gold: #d99a16;
+  --blue: #2c66c9;
+  --green: #1c7d45;
+  --shadow: 0 14px 40px rgba(48, 32, 18, 0.08);
+  --serif: "Noto Serif Georgian", "Noto Sans Georgian", Sylfaen, "Segoe UI", sans-serif;
+  --sans: "Noto Sans Georgian", Sylfaen, "Segoe UI", "DejaVu Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: #e7dccb;
+  z-index: 30;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--maroon), var(--coral));
+  width: 0;
+  transition: width .35s ease;
+}
+
+.slide {
+  display: none;
+  height: 100vh;
+  height: 100dvh;
+  padding: 36px 92px 78px;
+}
+.slide.active {
+  display: flex;
+  overflow: auto;
+  animation: rise .38s ease;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide.active { animation: none; }
+}
+
+.wrap {
+  width: min(1120px, 100%);
+  margin: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--maroon);
+  font-weight: 700;
+  letter-spacing: .04em;
+  font-size: 0.95rem;
+}
+h1, h2 { font-family: var(--serif); margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); }
+h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
+.lead { margin: 0; font-size: 1.35rem; color: var(--muted); max-width: 40rem; }
+
+.rule {
+  margin: 4px 0 0;
+  background: #fff6df;
+  border-left: 6px solid var(--gold);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.card, .opt, .btn, .chip, .hw, .word, .path, .step, .numbox {
+  border-radius: 18px;
+}
+
+.row { display: flex; gap: 16px; flex-wrap: wrap; }
+.grow { flex: 1 1 0; min-width: 220px; }
+
+.card, .path, .hw, .word, .step {
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+}
+
+.path, .hw, .word, .step { padding: 16px 18px; }
+
+.eq {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+.eq.xl { font-size: clamp(2.4rem, 5vw, 4rem); text-align: center; }
+.zero { color: var(--coral); }
+
+.labels {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  justify-items: center;
+}
+.tag {
+  background: #f3ebe0;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.tag.product { background: #e5f4f1; color: var(--teal); }
+
+.swap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.numbox {
+  min-width: 110px;
+  text-align: center;
+  background: white;
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 18px 12px;
+  font-size: 3rem;
+  font-weight: 700;
+}
+.numbox.result {
+  background: #e7f6f1;
+  border-color: #b7e2d8;
+  color: var(--teal);
+}
+.op { font-size: 2.4rem; color: var(--muted); font-weight: 700; }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tile { padding: 20px; }
+.tile h3 { margin: 0 0 8px; font-size: 1.15rem; }
+.tile.one { background: #fff8e8; border-color: #f0ddb0; }
+.tile.zero { background: #f4f6f8; border-color: #d9e0e6; }
+.tile p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+.tries { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.try {
+  background: white;
+  border: 1px dashed #d9cbb8;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn, .opt {
+  font-family: inherit;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.btn {
+  background: var(--maroon);
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 12px 18px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost {
+  background: white;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn:focus-visible, .opt:focus-visible, .edge:focus-visible, .dot:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+[hidden] { display: none !important; }
+.paths { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.path .kicker { margin: 0 0 6px; color: var(--muted); font-weight: 700; font-size: .95rem; }
+.path.alt { background: #f3faf7; }
+
+.formula {
+  text-align: center;
+  background: var(--ink);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 700;
+}
+.fine { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+.ladder { display: grid; gap: 8px; }
+.ladder div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.steps { display: grid; gap: 10px; }
+.step[hidden],
+#est[hidden],
+#est2[hidden] { display: none !important; }
+.step b { color: var(--teal); }
+
+.problems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.problem {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 18px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+}
+.problem .eq { font-size: 1.7rem; }
+.problems.tight { gap: 10px; }
+.problems.tight .problem { min-height: 0; padding: 12px 10px; gap: 8px; }
+
+.quiz-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.qtext { font-family: var(--serif); font-size: clamp(1.7rem, 3vw, 2.5rem); margin: 0; }
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.opt {
+  background: white;
+  border: 2px solid var(--line);
+  text-align: left;
+  padding: 16px 18px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+.opt.good { background: #e7f6ec; border-color: var(--green); }
+.opt.bad { background: #fdecea; border-color: var(--coral); }
+.why { margin: 0; font-size: 1.15rem; min-height: 1.4em; }
+.score {
+  text-align: center;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+.score strong { font-family: var(--serif); font-size: 2.4rem; }
+
+.compare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.bubble {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.qmark {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--maroon);
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.rounds { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.chip {
+  background: white;
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.chip em { font-style: normal; color: var(--teal); }
+
+.words { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.word { text-align: center; padding: 28px 10px; }
+.word span { display: block; color: var(--muted); font-size: .95rem; margin-bottom: 6px; }
+.word strong { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.3rem); }
+
+.hwlist { display: grid; gap: 10px; }
+.hw { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; }
+.n {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--maroon); color: white; font-weight: 700;
+}
+.hw p { margin: 0; font-size: 1.15rem; }
+.hw small { color: var(--muted); }
+
+.title-slide .wrap { align-items: flex-start; gap: 14px; }
+.mark {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--teal);
+}
+.pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.pill {
+  background: white;
+  border-radius: 999px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  font-weight: 700;
+}
+.bigx {
+  position: absolute;
+  right: 6vw;
+  bottom: 10vh;
+  font-size: 18rem;
+  line-height: .8;
+  color: rgba(142, 47, 60, .08);
+  font-weight: 700;
+  pointer-events: none;
+  font-family: var(--serif);
+}
+
+.groups { display: flex; gap: 12px; flex-wrap: wrap; }
+.gcard {
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: white;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--c, var(--maroon));
+}
+.shown { color: var(--teal); font-weight: 700; }
+
+.footer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px 0 78px;
+  background: rgba(246, 241, 231, .94);
+  border-top: 1px solid var(--line);
+  z-index: 25;
+  font-size: .95rem;
+  color: var(--muted);
+}
+.footer b { color: var(--ink); font-weight: 700; }
+.dots { display: flex; gap: 6px; }
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 0; padding: 0; background: #d9cdb8; cursor: pointer;
+}
+.dot.on { background: var(--maroon); transform: scale(1.25); }
+
+.edge {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 26;
+  width: 52px; height: 84px;
+  border: 0;
+  border-radius: 16px;
+  background: rgba(255,255,255,.75);
+  color: var(--ink);
+  font-size: 2.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.edge.prev { left: 14px; }
+.edge.next { right: 14px; }
+.edge:disabled { opacity: .25; cursor: default; }
+
+.note {
+  position: fixed;
+  left: 78px; right: 78px; bottom: 72px;
+  background: var(--ink);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  z-index: 28;
+  display: none;
+  box-shadow: 0 16px 40px rgba(0,0,0,.2);
+}
+body.show-notes .slide.active .note { display: block; }
+.note small { display: block; color: #f0c36a; font-weight: 700; margin-bottom: 4px; letter-spacing: .04em; }
+
+.help {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 36, 48, .45);
+  z-index: 40;
+  display: none;
+  place-items: center;
+}
+.help.open { display: grid; }
+.help article {
+  background: white;
+  border-radius: 20px;
+  padding: 22px 24px;
+  width: min(460px, calc(100% - 40px));
+  box-shadow: var(--shadow);
+}
+.help h3 { margin: 0 0 8px; font-family: var(--serif); }
+.help p { margin: 6px 0; }
+kbd {
+  background: #f3ebe0;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+@media (max-height: 820px) {
+  .slide { padding: 28px 84px 70px; }
+  .wrap { gap: 12px; }
+  .gcard { width: 68px; height: 68px; font-size: 2rem; }
+  .numbox { font-size: 2.4rem; padding: 12px; }
+  .problem { min-height: 120px; }
+  .word { padding: 16px 8px; }
+}
+@media (max-width: 900px) {
+  .pair, .paths, .problems, .words, .options { grid-template-columns: 1fr; }
+  .slide { padding: 24px 64px 72px; }
+  .labels { grid-template-columns: 1fr; }
+}
+
+.wrongline { display: flex; justify-content: flex-start; }
+.claim {
+  background: #fdecea;
+  color: var(--coral);
+  border-radius: 16px;
+  padding: 10px 18px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<section class="slide title-slide active" data-name="სათაური" data-note="ჯერ სლაიდზე ახსნა და მაგალითები. ბოლოს სამი თამაში, მთელ კლასთან.">
+  <div class="wrap">
+    <p class="mark">მათემატიკა, V კლასი</p>
+    <h1>გამრავლების<br>თვისებები</h1>
+    <p class="lead">სახელმძღვანელო, გვ. 56–57</p>
+  </div>
+</section>
+
+<section class="slide" data-name="შეცდომა" data-note="წაიკითხე ისე, თითქოს სწორია: ხუთ მოსწავლეს თითო 6 რვეული აქვს, ეს 6·6-ია, სულ 36. დაელოდე. ვინც იტყვის, რომ მოსწავლე ხუთია, გახსენი პასუხი. ორივე გზა 30-ია: 5·6 და 6+6+6+6+6.">
+  <div class="wrap">
+    <p class="eyebrow">ერთი შეცდომა</p>
+    <h2>ეს 36 ხომ არ არის?</h2>
+    <p class="lead">ხუთ მოსწავლეს თითო 6 რვეული აქვს. ეს 6 · 6-ია, სულ 36.</p>
+    <div class="wrongline"><span class="eq claim">6 · 6 = 36</span></div>
+    <div class="tries">
+      <button class="btn" data-open="caught" type="button">ვინ დაიჭერს?</button>
+    </div>
+    <div id="caught" hidden>
+      <p class="rule">მოსწავლე ხუთია. 5 · 6 = 30 და 6 + 6 + 6 + 6 + 6. ორივე 30-ია.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="რვეულები" data-note="კლასმა ორი გზა თვითონ თქვას. გზები და პასუხი მერე გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">გვ. 56</p>
+    <h2>სულ რამდენი რვეულია?</h2>
+    <p class="lead">ხუთი მოსწავლიდან თითოეულს 6 რვეული აქვს.</p>
+    <div class="groups" aria-hidden="true">
+      <div class="gcard" style="--c:#e15a42">6</div>
+      <div class="gcard" style="--c:#0f7a6e">6</div>
+      <div class="gcard" style="--c:#2c66c9">6</div>
+      <div class="gcard" style="--c:#d99a16">6</div>
+      <div class="gcard" style="--c:#8e2f3c">6</div>
+    </div>
+    <div class="tries">
+      <button class="btn" data-open="ways">ორი გზა</button>
+    </div>
+    <div class="paths" id="ways" hidden>
+      <div class="path">
+        <p class="kicker">შეკრებით</p>
+        <div class="eq">6 + 6 + 6 + 6 + 6</div>
+      </div>
+      <div class="path alt">
+        <p class="kicker">გამრავლებით</p>
+        <div class="eq">5 · 6</div>
+      </div>
+    </div>
+    <div class="tries">
+      <button class="btn" data-open="pens">ორივე პასუხი</button>
+      <span id="pens" class="shown" hidden>ორივე 30-ია</span>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="სიტყვები" data-note="ერთმა მოსწავლემ ხმამაღლა წაიკითხოს. ეს სამი სიტყვა დაფაზეც დარჩეს.">
+  <div class="wrap">
+    <p class="eyebrow">გვ. 56</p>
+    <h2>რას ვეძახით</h2>
+    <div class="eq xl">5 · 6 = 30</div>
+    <div class="labels">
+      <span class="tag">მამრავლი</span>
+      <span></span>
+      <span class="tag">მამრავლი</span>
+      <span></span>
+      <span class="tag product">ნამრავლი</span>
+    </div>
+    <p class="rule">გამრავლება განმეორებითი შეკრებაა.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="გადანაცვლებადობა" data-note="კლასმა დათვალოს 6·5 და 5·6. ჯერ თქვან, რა არ შეიცვალა. სახელი მერე გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">ორი ანგარიში</p>
+    <h2>6 · 5 და 5 · 6</h2>
+    <div class="swap" id="swap">
+      <div class="numbox" data-a>6</div>
+      <div class="op">·</div>
+      <div class="numbox" data-b>5</div>
+      <div class="op">=</div>
+      <div class="numbox result">30</div>
+    </div>
+    <button class="btn" id="swapBtn" type="button">გადაანაცვლე</button>
+    <div class="tries">
+      <button class="btn" data-open="ruleSwap" type="button">რა შევნიშნეთ?</button>
+    </div>
+    <p class="rule" id="ruleSwap" hidden>გადანაცვლებადობის თვისება. მამრავლების ადგილის გაცვლა ნამრავლს არ ცვლის. a · b = b · a.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="ერთი და ნული" data-note="კერძო შემთხვევაა, სამ თვისებაში არ შედის. პასუხი ჯერ ხელის აწევით. ბოლოს ერთად თქვან: ერთზე გამრავლება რიცხვს არ ცვლის.">
+  <div class="wrap">
+    <p class="eyebrow">კერძო შემთხვევა, სამ თვისებაში არ შედის</p>
+    <h2>ერთი და ნული</h2>
+    <div class="pair">
+      <article class="tile one card">
+        <h3>ერთის თვისება</h3>
+        <div class="eq">7 · 1 = 7</div>
+        <p>ერთზე გამრავლება რიცხვს არ ცვლის.</p>
+      </article>
+      <article class="tile zero card">
+        <h3>ნულის თვისება</h3>
+        <div class="eq">7 · 0 = 0</div>
+        <p>ნულზე გამრავლება ყოველთვის ნულს იძლევა.</p>
+      </article>
+    </div>
+    <div class="tries">
+      <div class="try">8 · 1 = <button class="btn ghost" data-open="o1">?</button><span id="o1" class="shown" hidden>8</span></div>
+      <div class="try">9 · 0 = <button class="btn ghost" data-open="o2">?</button><span id="o2" class="shown" hidden>0</span></div>
+      <div class="try">0 · a = <button class="btn ghost" data-open="o3">?</button><span id="o3" class="shown" hidden>0</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="ჯუფთებადობა" data-note="ორივე ანგარიში სლაიდზეა. კლასმა ორივე გზა თქვას. სახელი მერე გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">ორი ანგარიში</p>
+    <h2>ფრჩხილი სად დგას?</h2>
+    <div class="paths">
+      <div class="path">
+        <p class="kicker">ჯერ მარცხენა ფრჩხილი</p>
+        <div class="eq">(3 · 4) · 5 = 12 · 5 = 60</div>
+      </div>
+      <div class="path alt">
+        <p class="kicker">ჯერ მარჯვენა ფრჩხილი</p>
+        <div class="eq">3 · (4 · 5) = 3 · 20 = 60</div>
+      </div>
+    </div>
+    <div class="tries">
+      <button class="btn" data-open="ruleGrp" type="button">რა შევნიშნეთ?</button>
+    </div>
+    <p class="rule" id="ruleGrp" hidden>ჯუფთებადობის თვისება. ფრჩხილის ადგილი ნამრავლს არ ცვლის. (a · b) · c = a · (b · c).</p>
+  </div>
+</section>
+
+<section class="slide" data-name="განრიგებადობა" data-note="კლასმა ორი გზა თვითონ თქვას. როცა ორივე 65-ია, სახელი და ფორმულა გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">ამოცანა</p>
+    <h2>ხუთი ყუთი</h2>
+    <p class="lead">თითო ყუთში 9 წითელი და 4 ლურჯი რვეულია. სულ რამდენია?</p>
+    <div class="tries">
+      <button class="btn" data-open="twoWays" type="button">ორი გზა</button>
+    </div>
+    <div class="paths" id="twoWays" hidden>
+      <div class="path">
+        <p class="kicker">ჯერ ფრჩხილში</p>
+        <div class="eq">5 · (9 + 4) = 5 · 13 = 65</div>
+      </div>
+      <div class="path alt">
+        <p class="kicker">ცალ-ცალკე</p>
+        <div class="eq">5 · 9 + 5 · 4 = 45 + 20 = 65</div>
+      </div>
+    </div>
+    <div class="tries">
+      <button class="btn" data-open="ruleDist" type="button">რა შევნიშნეთ?</button>
+    </div>
+    <div id="ruleDist" hidden>
+      <div class="formula">a(b + c) = ab + ac</div>
+      <p class="rule">განრიგებადობის თვისება ჯამის მიმართ. მარჯვნიდანაც იგივეა: (b + c) · a = ba + ca. სამ შესაკრებზე: 6 · (2 + 3 + 5) = 6·2 + 6·3 + 6·5 = 60. გამოკლებაზე: a(b − c) = ab − ac.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="საერთო მამრავლი" data-note="ჯერ უკვე ნანახი ტოლობა აჩვენეთ. მერე ჰკითხეთ 9a+7a. ეს ახალი კანონი არ არის: განრიგებადობაა უკან წაკითხული, საერთო მამრავლი ფრჩხილებს გარეთ გადის.">
+  <div class="wrap">
+    <p class="eyebrow">განრიგებადობიდან</p>
+    <h2>საერთო მამრავლი</h2>
+    <p class="lead">უკვე ვნახეთ: 5 · 9 + 5 · 4 = 5 · (9 + 4).</p>
+    <p class="lead">მაშინ 9a + 7a რას უდრის?</p>
+    <div class="tries">
+      <button class="btn" data-open="likeMain" type="button">ჩანაწერი</button>
+      <span id="likeMain" class="shown" hidden>9a + 7a = (9 + 7)a = 16a</span>
+    </div>
+    <div class="tries">
+      <div class="try">4a + 5a = <button class="btn ghost" data-open="like">?</button><span id="like" class="shown" hidden>9a</span></div>
+    </div>
+    <p class="rule">საერთო მამრავლი a ფრჩხილებს გარეთ გადის. ეს განრიგებადობის თვისებაა, უკან წაკითხული.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="ასოებით" data-note="ჯერ სიტყვიერად თქვან, მერე გახსენით ჩანაწერი. 8a და 8·a ერთი და იგივეა. 7(a+c)-ის გვერდით (a+c)·7-იც იკითხეთ.">
+  <div class="wrap">
+    <p class="eyebrow">ასოებით ჩაწერა</p>
+    <h2>მოკლედ, ასოთი</h2>
+    <div class="hwlist">
+      <article class="hw">
+        <span class="n">1</span>
+        <p>a გამრავლებული 8-ზე<br><button class="btn ghost" data-open="let1" type="button">ჩანაწერი</button> <span id="let1" class="shown" hidden>8a</span></p>
+      </article>
+      <article class="hw">
+        <span class="n">2</span>
+        <p>a-სა და c-ს ჯამი, გამრავლებული 7-ზე<br><button class="btn ghost" data-open="let2" type="button">ჩანაწერი</button> <span id="let2" class="shown" hidden>7(a + c) და (a + c) · 7</span></p>
+      </article>
+      <article class="hw">
+        <span class="n">3</span>
+        <p>9a-სა და 7a-ს ჯამი<br><button class="btn ghost" data-open="let3" type="button">ჩანაწერი</button> <span id="let3" class="shown" hidden>9a + 7a</span></p>
+      </article>
+    </div>
+    <p class="rule">8a იგივეა, რაც 8 · a. 7(a + c) და (a + c) · 7 გადანაცვლებადობით ერთი და იგივეა.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="გამოსახულება" data-note="ჯერ ჰკითხეთ, სად არის ტოლობის ნიშანი. სახელი მერე გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">გამოსახულება და ტოლობა</p>
+    <h2>ორი სხვადასხვა რამ</h2>
+    <div class="problems tight">
+      <div class="problem">
+        <div class="eq">8a</div>
+        <button class="btn ghost" data-open="k1" type="button">რა არის?</button>
+        <span id="k1" class="shown" hidden>გამოსახულება</span>
+      </div>
+      <div class="problem">
+        <div class="eq">8a = 56</div>
+        <button class="btn ghost" data-open="k2" type="button">რა არის?</button>
+        <span id="k2" class="shown" hidden>ტოლობა</span>
+      </div>
+      <div class="problem">
+        <div class="eq">9a + 7a</div>
+        <button class="btn ghost" data-open="k4" type="button">რა არის?</button>
+        <span id="k4" class="shown" hidden>გამოსახულება</span>
+      </div>
+      <div class="problem">
+        <div class="eq">9a + 7a = 16a</div>
+        <button class="btn ghost" data-open="k5" type="button">რა არის?</button>
+        <span id="k5" class="shown" hidden>ტოლობა</span>
+      </div>
+    </div>
+    <p class="rule">გამოსახულებას = არ აქვს. ტოლობას აქვს =. 9a + 7a = 16a განრიგებადობიდან მოდის.</p>
+  </div>
+</section>
+
+<section class="slide" data-name="მაგალითები" data-note="გვ. 57 სლაიდზევე კეთდება. ჯერ მიზეზი თქვან, პასუხი მერე გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">გვ. 57</p>
+    <h2>მაგალითები</h2>
+    <div class="hwlist">
+      <article class="hw"><span class="n">1</span><p>თუ a ნებისმიერი რიცხვია, 0 · a = <button class="btn ghost" data-open="ex1" type="button">?</button> <span id="ex1" class="shown" hidden>0</span></p></article>
+      <article class="hw"><span class="n">2</span><p>27 + 27 + 27 + 27 + 27 = <button class="btn ghost" data-open="ex2" type="button">?</button> <span id="ex2" class="shown" hidden>5 · 27</span></p></article>
+      <article class="hw"><span class="n">3</span><p>თუ a = 7, 8a = <button class="btn ghost" data-open="ex3" type="button">?</button> <span id="ex3" class="shown" hidden>56</span></p></article>
+      <article class="hw"><span class="n">4</span><p>თუ a = 0, 11a = <button class="btn ghost" data-open="ex4" type="button">?</button> <span id="ex4" class="shown" hidden>0</span></p></article>
+      <article class="hw"><span class="n">5</span><p>7(a + c) = <button class="btn ghost" data-open="ex5" type="button">?</button> <span id="ex5" class="shown" hidden>7a + 7c. იგივეა (a + c) · 7</span></p></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="შეჯამება" data-note="სამმა მოსწავლემ თითო წინადადება თქვას თავისი სიტყვით. მერე გადადით თამაშების სლაიდზე.">
+  <div class="wrap">
+    <p class="eyebrow">ბოლოს</p>
+    <h2>სამი თვისება</h2>
+    <div class="hwlist">
+      <article class="hw">
+        <span class="n">1</span>
+        <p>გადანაცვლებადობა: მამრავლების გაცვლა ნამრავლს არ ცვლის. a · b = b · a.</p>
+      </article>
+      <article class="hw">
+        <span class="n">2</span>
+        <p>ჯუფთებადობა: ფრჩხილის ადგილი ნამრავლს არ ცვლის. (a · b) · c = a · (b · c).</p>
+      </article>
+      <article class="hw">
+        <span class="n">3</span>
+        <p>განრიგებადობა: a(b + c) = ab + ac. აქედან 9a + 7a = 16a.</p>
+      </article>
+      <article class="hw">
+        <span class="n">4</span>
+        <p>ერთზე გამრავლება რიცხვს არ ცვლის. ნულზე გამრავლება ნულს იძლევა. 8a გამოსახულებაა, 8a = 56 ტოლობაა.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="თამაშები" data-note="გახსენი tamashebi.html. სამი თამაში ზედიზედ, მთელ კლასთან.">
+  <div class="wrap">
+    <p class="eyebrow">კლასში</p>
+    <h2>სამი თამაში</h2>
+    <div class="hwlist">
+      <article class="hw"><span class="n">1</span><p>ბაყაყი სხივზე. ფოთოლს აჭერენ, ნაბიჯი მთელია.</p></article>
+      <article class="hw"><span class="n">2</span><p>საიდუმლო რიცხვი. სამი პირობა, ერთი რიცხვი.</p></article>
+      <article class="hw"><span class="n">3</span><p>ორი ჩანაწერი. იგივე ნამრავლი და თვისების სახელი.</p></article>
+    </div>
+    <p class="rule">ჯერ ეს სლაიდები: ახსნა და მაგალითები. მერე თამაშები.</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div><b id="footName">სათაური</b></div>
+  <div class="dots" id="dots"></div>
+  <div><span id="footCount">1 / 15</span> · <button class="btn ghost" id="helpBtn" type="button" style="padding:6px 12px">კლავიშები</button></div>
+</footer>
+
+<button class="edge prev" id="prev" type="button" aria-label="წინა სლაიდი">‹</button>
+<button class="edge next" id="next" type="button" aria-label="შემდეგი სლაიდი">›</button>
+
+<div class="help" id="help">
+  <article>
+    <h3>როგორ ვმართოთ</h3>
+    <p><kbd>→</kbd> შემდეგი &nbsp; <kbd>←</kbd> წინა</p>
+    <p><kbd>F</kbd> მთელი ეკრანი &nbsp; <kbd>T</kbd> შენიშვნა</p>
+    <p>პასუხი ღილაკზე იხსნება.</p>
+    <button class="btn" id="helpClose" type="button">გასაგებია</button>
+  </article>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll(".slide")];
+const bar = document.getElementById("bar");
+const footName = document.getElementById("footName");
+const footCount = document.getElementById("footCount");
+const dots = document.getElementById("dots");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+let index = 0;
+
+slides.forEach((slide, i) => {
+  const note = document.createElement("div");
+  note.className = "note";
+  note.innerHTML = "<small>შენიშვნა</small>" + slide.dataset.note;
+  slide.appendChild(note);
+  const dot = document.createElement("button");
+  dot.className = "dot";
+  dot.type = "button";
+  dot.setAttribute("aria-label", slide.dataset.name);
+  dot.addEventListener("click", (e) => { e.stopPropagation(); show(i); });
+  dots.appendChild(dot);
+});
+
+function show(i) {
+  index = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, n) => s.classList.toggle("active", n === index));
+  const s = slides[index];
+  footName.textContent = s.dataset.name;
+  footCount.textContent = (index + 1) + " / " + slides.length;
+  bar.style.width = ((index + 1) / slides.length * 100) + "%";
+  [...dots.children].forEach((d, n) => d.classList.toggle("on", n === index));
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === slides.length - 1;
+}
+
+function next() { show(index + 1); }
+function prev() { show(index - 1); }
+
+prevBtn.addEventListener("click", (e) => { e.stopPropagation(); prev(); });
+nextBtn.addEventListener("click", (e) => { e.stopPropagation(); next(); });
+
+document.addEventListener("keydown", (e) => {
+  const help = document.getElementById("help");
+  if (e.key === "Escape") { help.classList.remove("open"); return; }
+  if (help.classList.contains("open")) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); next(); }
+  else if (e.key === "ArrowLeft" || e.key === "PageUp" || e.key === "Backspace") { e.preventDefault(); prev(); }
+  else if (e.key === " " && e.target.tagName !== "BUTTON") { e.preventDefault(); next(); }
+  else if (e.key === "Home") { show(0); }
+  else if (e.key === "End") { show(slides.length - 1); }
+  else if (e.key === "f" || e.key === "F") {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  } else if (e.key === "t" || e.key === "T") {
+    document.body.classList.toggle("show-notes");
+  }
+});
+
+document.querySelectorAll("[data-open]").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const el = document.getElementById(btn.dataset.open);
+    el.hidden = false;
+    btn.hidden = true;
+  });
+});
+
+const swapBtn = document.getElementById("swapBtn");
+swapBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const a = document.querySelector("[data-a]");
+  const b = document.querySelector("[data-b]");
+  const t = a.textContent;
+  a.textContent = b.textContent;
+  b.textContent = t;
+  a.animate([{ transform: "scale(1.08)" }, { transform: "none" }], { duration: 220 });
+});
+
+const help = document.getElementById("help");
+document.getElementById("helpBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  help.classList.add("open");
+});
+document.getElementById("helpClose").addEventListener("click", (e) => {
+  e.stopPropagation();
+  help.classList.remove("open");
+});
+help.addEventListener("click", (e) => { if (e.target === help) help.classList.remove("open"); });
+
+const params = new URLSearchParams(location.search);
+const start = parseInt(params.get("slide") || "1", 10);
+show(Number.isFinite(start) ? start - 1 : 0);
+</script>
+</body>
+</html>

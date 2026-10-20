@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ბაყაყი სხივზე — ნატურალური რიცხვები</title>
+<style>
+@font-face { font-family: "Noto Sans Georgian"; src: url("fonts/NotoSansGeorgian-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans Georgian"; src: url("fonts/NotoSansGeorgian-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Serif Georgian"; src: url("fonts/NotoSerifGeorgian-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Serif Georgian"; src: url("fonts/NotoSerifGeorgian-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+:root {
+  --ink: #1c2430; --muted: #5e6872; --paper: #f4f7f2; --card: #fffdf9; --line: #e3eadc;
+  --maroon: #8e2f3c; --teal: #0f7a6e; --gold: #d99a16; --green: #1c7d45; --leaf: #2f9e44;
+  --shadow: 0 14px 40px rgba(48, 32, 18, 0.08);
+  --serif: "Noto Serif Georgian", "Noto Sans Georgian", Sylfaen, sans-serif;
+  --sans: "Noto Sans Georgian", Sylfaen, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(47, 158, 68, .08), transparent 28%),
+    radial-gradient(circle at 88% 0%, rgba(217, 154, 22, .12), transparent 26%),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+.slide { height: 100vh; height: 100dvh; padding: 28px 72px 24px; display: flex; }
+.wrap { width: min(1100px, 100%); margin: auto; display: flex; flex-direction: column; gap: 14px; }
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.eyebrow { margin: 0; color: var(--maroon); font-weight: 700; letter-spacing: .03em; }
+h1 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.1rem); margin: 0; line-height: 1.1; }
+.meta { text-align: right; font-weight: 700; color: var(--muted); }
+.meta b { display: block; color: var(--ink); font-size: 1.35rem; }
+.prompt {
+  margin: 0;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-weight: 700;
+  min-height: 4.6rem;
+}
+.pond {
+  position: relative;
+  margin-top: 8px;
+  padding: 58px 6px 4px;
+}
+.bar {
+  position: absolute;
+  left: 28px; right: 28px; top: 78px;
+  height: 5px;
+  background: var(--maroon);
+  border-radius: 5px;
+}
+.bar::after {
+  content: "";
+  position: absolute;
+  right: -12px; top: -8px;
+  border: 10px solid transparent;
+  border-left: 16px solid var(--maroon);
+}
+.frog {
+  position: absolute;
+  top: 22px;
+  width: 48px; height: 48px;
+  margin-left: -24px;
+  z-index: 3;
+  pointer-events: none;
+  transition: left .45s cubic-bezier(.2, .8, .2, 1);
+  filter: drop-shadow(0 6px 0 rgba(28, 36, 48, .12));
+}
+.frog .body {
+  width: 46px; height: 36px;
+  background: var(--green);
+  border-radius: 50% 50% 46% 46%;
+  position: absolute;
+  bottom: 0; left: 1px;
+}
+.frog .eye {
+  position: absolute;
+  top: 2px;
+  width: 14px; height: 14px;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid #145c32;
+}
+.frog .eye::after {
+  content: "";
+  position: absolute;
+  width: 6px; height: 6px;
+  background: var(--ink);
+  border-radius: 50%;
+  top: 4px; left: 3px;
+}
+.frog .eye.l { left: 8px; }
+.frog .eye.r { right: 8px; }
+.pads { position: relative; display: flex; justify-content: space-between; }
+.pad {
+  width: 48px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  color: var(--ink);
+}
+.pad i {
+  display: block;
+  width: 28px; height: 22px;
+  margin: 8px auto 8px;
+  border-radius: 50%;
+  background: #d8f3df;
+  border: 3px solid var(--leaf);
+  box-shadow: 0 0 0 4px var(--paper);
+}
+.pad b { display: block; font-size: 1.15rem; }
+.pad.here i { background: var(--gold); border-color: #a8740c; }
+.pad.good i { background: var(--teal); border-color: var(--teal); }
+.pad.bad i { background: #f0b4a8; border-color: var(--maroon); animation: shake .35s linear; }
+@keyframes shake {
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.pad:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 12px; }
+.why {
+  margin: 0;
+  min-height: 3.2rem;
+  background: #fff6df;
+  border-left: 6px solid var(--gold);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.btn {
+  font-family: inherit;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: var(--maroon);
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 10px 18px;
+  border-radius: 999px;
+}
+.btn.ghost { background: white; color: var(--ink); border-color: var(--line); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.ghost.on { background: var(--teal); color: white; border-color: var(--teal); }
+.fine { margin: 0; color: var(--muted); }
+.note {
+  position: fixed; left: 24px; right: 24px; bottom: 16px;
+  background: var(--ink); color: white; border-radius: 16px; padding: 14px 16px;
+  display: none; z-index: 5;
+}
+body.show-notes .note { display: block; }
+.note small { display: block; color: #f0c36a; font-weight: 700; margin-bottom: 4px; }
+@media (max-width: 800px) {
+  .slide { padding: 16px 16px 12px; overflow: auto; }
+  .top { flex-direction: column; align-items: flex-start; }
+  .meta { text-align: left; }
+  .pad { width: 22px; }
+  .pad b { font-size: .72rem; }
+  .pad i { width: 18px; height: 16px; }
+  .frog { transform: scale(.8); transform-origin: center bottom; }
+}
+</style>
+</head>
+<body>
+<section class="slide">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <p class="eyebrow">სახალისო სავარჯიშო · V კლასი</p>
+        <h1>ბაყაყი სხივზე</h1>
+      </div>
+      <p class="meta">ნახტომი <b id="count">1 / 6</b></p>
+    </div>
+    <p class="prompt" id="prompt"></p>
+    <div class="pond" id="pond">
+      <div class="bar" aria-hidden="true"></div>
+      <div class="frog" id="frog" aria-hidden="true">
+        <span class="eye l"></span>
+        <span class="eye r"></span>
+        <span class="body"></span>
+      </div>
+      <div class="pads" id="pads"></div>
+    </div>
+    <p class="why" id="why">დააჭირე იმ ფოთოლს, სადაც ბაყაყი დაჯდება. რიცხვები ნატურალურია, ნაბიჯი მთელია.</p>
+    <div class="row">
+      <button class="btn" id="next" type="button" disabled>შემდეგი ნახტომი</button>
+      <button class="btn ghost" id="again" type="button" hidden>თავიდან</button>
+      <button class="btn ghost on" id="easyBtn" type="button">ადვილი</button>
+      <button class="btn ghost" id="hardBtn" type="button">რთული</button>
+      <p class="fine" id="found">ნაპოვნი ფოთოლი: 0</p>
+    </div>
+  </div>
+</section>
+<div class="note" id="note">
+  <small>მასწავლებლისთვის · T</small>
+  <span id="noteText"></span>
+</div>
+<script>
+const sets = {
+  easy: [
+    { from: 0, ans: 3, q: "ბაყაყი საწყისზე, 0-ზე ზის და 3 ნაბიჯს ხტება მარჯვნივ. რომელ ფოთოლზე დაჯდა?", why: "0-დან სამი ნაბიჯია. 3." },
+    { from: 3, ans: 7, q: "იქიდან კიდევ 4 ნაბიჯი მარჯვნივ. სად არის ახლა?", why: "3 + 4 = 7." },
+    { from: 0, ans: 6, q: "საწყისიდან ორი ერთნაირი ნახტომი, თითო 3 ნაბიჯი. სად დაჯდა?", why: "3 + 3 = 6. ორი სამეული ექვსია." },
+    { from: 2, ans: 7, q: "ფოთოლ 2-ზე ზის და კიდევ 5 ნაბიჯით შორდება საწყისს. რომელ რიცხვზეა?", why: "2 + 5 = 7." },
+    { from: 4, ans: 8, q: "ახლა 4-ზეა. უნდა აღმოჩნდეს საწყისიდან ორჯერ შორს. სად დაჯდება?", why: "ორჯერ შორს ნიშნავს 2 · 4 = 8." },
+    { from: 1, ans: 5, q: "1-სა და 9-ს ზუსტ შუაში რომელ ნატურალურ რიცხვზე დგას ფოთოლი?", why: "1-დან 9-მდე 8 ნაბიჯია. ნახევარი 4-ია, ამიტომ 1 + 4 = 5." }
+  ],
+  hard: [
+    { from: 0, ans: 9, q: "საწყისიდან 3 ნაბიჯი წავიდა, იქიდან კიდევ ორჯერ იმდენი. სად დაჯდა?", why: "ჯერ 3. ორჯერ იმდენი 6-ია. 3 + 6 = 9." },
+    { from: 11, ans: 6, q: "11-ზე ზის და 5 ნაბიჯით უკან ბრუნდება, საწყისისკენ. სად არის?", why: "11 − 5 = 6. უკან ითვლი.", hint: "უკან ბრუნდება, საწყისისკენ." },
+    { from: 1, ans: 10, q: "1-დან სამი ნახტომი ზედიზედ: ჯერ 2, მერე 3, მერე 4 ნაბიჯი. სად დაჯდა?", why: "1 + 2 = 3, 3 + 3 = 6, 6 + 4 = 10." },
+    { from: 2, ans: 5, q: "2-დან 6 ნაბიჯი წავიდა მარჯვნივ, მერე 3 ნაბიჯი დაბრუნდა. სად გაჩერდა?", why: "2 + 6 = 8. უკან 3 ნაბიჯი: 8 − 3 = 5.", hint: "ჯერ წინ, მერე უკან." },
+    { from: 12, ans: 6, q: "12-ზე ზის და უნდა აღმოჩნდეს საწყისიდან ორჯერ ახლოს. სად დადგება?", why: "12-ის ნახევარი 6-ია. ორჯერ ახლოს ნიშნავს 6-ს." },
+    { from: 3, ans: 8, q: "ჯერ იპოვე 3-სა და 11-ს შუა ფოთოლი, მერე ერთი ნაბიჯი მარჯვნივ. სად ხარ?", why: "3-დან 11-მდე 8 ნაბიჯია. შუა 7-ია. კიდევ ერთი: 8." }
+  ]
+};
+let level = "easy";
+let rounds = sets.easy;
+
+const pads = document.getElementById("pads");
+const frog = document.getElementById("frog");
+const prompt = document.getElementById("prompt");
+const why = document.getElementById("why");
+const count = document.getElementById("count");
+const nextBtn = document.getElementById("next");
+const againBtn = document.getElementById("again");
+const found = document.getElementById("found");
+const noteText = document.getElementById("noteText");
+
+let step = 0;
+let locked = false;
+let score = 0;
+let spot = 0;
+
+for (let n = 0; n <= 12; n++) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "pad";
+  b.dataset.n = String(n);
+  b.innerHTML = "<i></i><b>" + n + "</b>";
+  b.setAttribute("aria-label", "რიცხვი " + n);
+  b.addEventListener("click", () => choose(n));
+  pads.appendChild(b);
+}
+
+function padEl(n) { return pads.querySelector('[data-n="' + n + '"]'); }
+
+function placeFrog(n) {
+  const pad = padEl(n);
+  const pond = document.getElementById("pond");
+  const leaf = pad.querySelector("i");
+  const x = leaf.getBoundingClientRect().left - pond.getBoundingClientRect().left + leaf.offsetWidth / 2;
+  frog.style.left = x + "px";
+  pads.querySelectorAll(".pad").forEach((p) => p.classList.remove("here"));
+  pad.classList.add("here");
+  spot = n;
+}
+
+function showRound() {
+  const r = rounds[step];
+  locked = false;
+  nextBtn.disabled = true;
+  nextBtn.hidden = false;
+  againBtn.hidden = true;
+  prompt.textContent = r.q;
+  why.textContent = "დააჭირე ფოთოლს. ჯერ თვითონ დაითვალე.";
+  count.textContent = (step + 1) + " / " + rounds.length;
+  pads.querySelectorAll(".pad").forEach((p) => p.classList.remove("good", "bad"));
+  placeFrog(r.from);
+  noteText.textContent = "პასუხი " + r.ans + ". " + r.why + " არასწორზე პასუხს ნუ ეტყვი, ნაბიჯების დათვლა სთხოვე.";
+}
+
+function choose(n) {
+  if (locked) return;
+  const r = rounds[step];
+  const pad = padEl(n);
+  if (n !== r.ans) {
+    pad.classList.remove("bad");
+    void pad.offsetWidth;
+    pad.classList.add("bad");
+    why.textContent = r.hint || "ეს ფოთოლი არ არის. საწყისიდან ნაბიჯები დათვალე, ერთ-ერთით.";
+    return;
+  }
+  locked = true;
+  score += 1;
+  found.textContent = "ნაპოვნი ფოთოლი: " + score;
+  pad.classList.add("good");
+  placeFrog(n);
+  why.textContent = r.why;
+  if (step === rounds.length - 1) {
+    prompt.textContent = level === "easy"
+      ? "ადვილი ექვსი გავიარე. რთულზე გადასვლა ღილაკით შეგიძლია."
+      : "რთული ექვსიც გავიარე. ბაყაყმა სხივი ბოლომდე გაიარა.";
+    nextBtn.hidden = true;
+    againBtn.hidden = false;
+    noteText.textContent = "თავიდან ამავე დონეს იწყებს. მეორე დონე ზემოთა ღილაკით იცვლება.";
+  } else {
+    nextBtn.disabled = false;
+  }
+}
+
+nextBtn.addEventListener("click", () => {
+  if (nextBtn.disabled) return;
+  step += 1;
+  showRound();
+});
+
+function startLevel(name) {
+  level = name;
+  rounds = sets[name];
+  step = 0;
+  score = 0;
+  found.textContent = "ნაპოვნი ფოთოლი: 0";
+  document.getElementById("easyBtn").classList.toggle("on", name === "easy");
+  document.getElementById("hardBtn").classList.toggle("on", name === "hard");
+  showRound();
+}
+
+againBtn.addEventListener("click", () => startLevel(level));
+document.getElementById("easyBtn").addEventListener("click", () => startLevel("easy"));
+document.getElementById("hardBtn").addEventListener("click", () => startLevel("hard"));
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "t" || e.key === "T") document.body.classList.toggle("show-notes");
+  if (e.key === "Enter" && !nextBtn.disabled && !nextBtn.hidden) nextBtn.click();
+});
+
+window.addEventListener("resize", () => placeFrog(spot));
+showRound();
+document.fonts.ready.then(() => placeFrog(spot));
+</script>
+</body>
+</html>
