@@ -79,7 +79,7 @@ body {
   display: none;
   height: 100vh;
   height: 100dvh;
-  padding: 74px 92px 78px;
+  padding: 36px 92px 78px;
 }
 .slide.active {
   display: flex;
@@ -486,7 +486,7 @@ kbd {
 }
 
 @media (max-height: 820px) {
-  .slide { padding: 68px 84px 70px; }
+  .slide { padding: 28px 84px 70px; }
   .wrap { gap: 12px; }
   .gcard { width: 68px; height: 68px; font-size: 2rem; }
   .numbox { font-size: 2.4rem; padding: 12px; }
@@ -494,41 +494,10 @@ kbd {
   .word { padding: 16px 8px; }
 }
 @media (max-width: 900px) {
-  .pair, .paths, .problems, .words, .options, .hookboxes { grid-template-columns: 1fr; }
-  .slide { padding: 86px 64px 72px; }
+  .pair, .paths, .problems, .words, .options { grid-template-columns: 1fr; }
+  .slide { padding: 24px 64px 72px; }
   .labels { grid-template-columns: 1fr; }
 }
-
-.friday {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 29;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 12px 6px 14px;
-  box-shadow: var(--shadow);
-}
-.friday p { margin: 0; font-weight: 700; font-size: .92rem; color: var(--muted); white-space: nowrap; }
-.friday p.won { color: var(--teal); }
-.friday .boxes { display: flex; gap: 6px; }
-.friday button {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  border: 2px solid var(--line);
-  background: white;
-  color: var(--ink);
-  font-family: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-.friday button.on { background: var(--teal); border-color: var(--teal); color: white; }
 
 .wrongline { display: flex; justify-content: flex-start; }
 .claim {
@@ -538,41 +507,11 @@ kbd {
   padding: 10px 18px;
   font-weight: 700;
 }
-.hookboxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.hookboxes button {
-  font-family: inherit;
-  text-align: left;
-  background: white;
-  border: 2px solid var(--line);
-  border-radius: 16px;
-  padding: 12px 14px;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.hookboxes button b {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: #f3ebe0;
-  color: var(--ink);
-  flex: 0 0 auto;
-}
-.hookboxes button span { font-weight: 700; font-size: 1.05rem; }
-.hookboxes button.on { background: #e7f6f1; border-color: var(--teal); }
-.hookboxes button.on b { background: var(--teal); color: white; }
-@media (max-width: 900px) {
-  .friday { top: auto; bottom: 68px; }
-}
 </style>
 </head>
 <body>
 <div class="progress" aria-hidden="true"><span id="bar"></span></div>
-<section class="slide title-slide active" data-name="სათაური" data-note="თემა მოკლედ. შემდეგ სლაიდზე ერთ შეცდომას შეგნებულად დაუშვებ. ზედა სამი უჯრა მთელ გაკვეთილზე ჩანს. სამივე თუ შევსებული დარჩა, პარასკევს თამაშს ჰპირდები. დღეს თამაში არ მიდის.">
+<section class="slide title-slide active" data-name="სათაური" data-note="ჯერ სლაიდზე ახსნა და მაგალითები. ბოლოს სამი თამაში, მთელ კლასთან.">
   <div class="wrap">
     <p class="mark">მათემატიკა, V კლასი</p>
     <h1>გამრავლების<br>თვისებები</h1>
@@ -580,7 +519,7 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="შეცდომა" data-note="წაიკითხე ისე, თითქოს სწორია: ხუთ მოსწავლეს თითო 6 რვეული აქვს, ეს 6·6-ია, სულ 36. დაელოდე. ვინც იტყვის, რომ მოსწავლე ხუთია, გახსენი პასუხი. ორივე გზა უნდა იყოს 30: 5·6 და 6+6+6+6+6. მაშინ დააჭირე პირველ უჯრას. ყვირილზე იმავე უჯრას კიდევ ერთხელ დააჭირე, წაიშლება.">
+<section class="slide" data-name="შეცდომა" data-note="წაიკითხე ისე, თითქოს სწორია: ხუთ მოსწავლეს თითო 6 რვეული აქვს, ეს 6·6-ია, სულ 36. დაელოდე. ვინც იტყვის, რომ მოსწავლე ხუთია, გახსენი პასუხი. ორივე გზა 30-ია: 5·6 და 6+6+6+6+6.">
   <div class="wrap">
     <p class="eyebrow">ერთი შეცდომა</p>
     <h2>ეს 36 ხომ არ არის?</h2>
@@ -592,16 +531,10 @@ kbd {
     <div id="caught" hidden>
       <p class="rule">მოსწავლე ხუთია. 5 · 6 = 30 და 6 + 6 + 6 + 6 + 6. ორივე 30-ია.</p>
     </div>
-    <div class="hookboxes">
-      <button type="button" data-box="1"><b>1</b><span>30 დაიჭირეს</span></button>
-      <button type="button" data-box="2"><b>2</b><span>6 · 5 და 5 · 6</span></button>
-      <button type="button" data-box="3"><b>3</b><span>(a + c) · 7</span></button>
-    </div>
-    <p class="fine">სამივე უჯრა თუ დარჩება, პარასკევს ათი წუთი თამაშია: მეორე გზა. ყვირილზე უჯრა იშლება. დღეს თამაში არ იწყება.</p>
   </div>
 </section>
 
-<section class="slide" data-name="რვეულები" data-note="პირველი უჯრა უკვე შევსებული უნდა იყოს. ახლა წყვილებმა ორი გზა თავად იპოვონ. გზები და პასუხი მერე გაიხსნას.">
+<section class="slide" data-name="რვეულები" data-note="კლასმა ორი გზა თვითონ თქვას. გზები და პასუხი მერე გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">გვ. 56</p>
     <h2>სულ რამდენი რვეულია?</h2>
@@ -649,7 +582,7 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="გადანაცვლებადობა" data-note="ერთმა წყვილმა 6·5 დათვალოს, მეორემ 5·6. ჯერ თავად თქვან, რა არ შეიცვალა. როცა იტყვიან, რომ ნამრავლი იგივე დარჩა, დააჭირე მეორე უჯრას. სახელი მერე გაიხსნას.">
+<section class="slide" data-name="გადანაცვლებადობა" data-note="კლასმა დათვალოს 6·5 და 5·6. ჯერ თქვან, რა არ შეიცვალა. სახელი მერე გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">ორი ანგარიში</p>
     <h2>6 · 5 და 5 · 6</h2>
@@ -692,7 +625,7 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="ჯუფთებადობა" data-note="კლასი ორად გაიყოს. ერთმა მხარემ მარცხენა ფრჩხილი დათვალოს, მეორემ მარჯვენა. სახელი მერე გაიხსნას.">
+<section class="slide" data-name="ჯუფთებადობა" data-note="ორივე ანგარიში სლაიდზეა. კლასმა ორივე გზა თქვას. სახელი მერე გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">ორი ანგარიში</p>
     <h2>ფრჩხილი სად დგას?</h2>
@@ -713,7 +646,7 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="განრიგებადობა" data-note="წყვილმა თავად აირჩიოს გზა. ფურცლები გაცვალონ და ნახონ, ერთი რიცხვი გამოვიდა თუ არა. სახელი და ფორმულა მერე გაიხსნას.">
+<section class="slide" data-name="განრიგებადობა" data-note="კლასმა ორი გზა თვითონ თქვას. როცა ორივე 65-ია, სახელი და ფორმულა გაიხსნას.">
   <div class="wrap">
     <p class="eyebrow">ამოცანა</p>
     <h2>ხუთი ყუთი</h2>
@@ -758,7 +691,7 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="ასოებით" data-note="ჯერ სიტყვიერად თქვან, მერე გახსენით ჩანაწერი. 8a და 8·a ერთი და იგივეა. ვინც 7(a+c)-ის გვერდით (a+c)·7-ს იტყვის, დააჭირე მესამე უჯრას.">
+<section class="slide" data-name="ასოებით" data-note="ჯერ სიტყვიერად თქვან, მერე გახსენით ჩანაწერი. 8a და 8·a ერთი და იგივეა. 7(a+c)-ის გვერდით (a+c)·7-იც იკითხეთ.">
   <div class="wrap">
     <p class="eyebrow">ასოებით ჩაწერა</p>
     <h2>მოკლედ, ასოთი</h2>
@@ -780,10 +713,10 @@ kbd {
   </div>
 </section>
 
-<section class="slide" data-name="სამი სახელი" data-note="ჯერ ჰკითხეთ, სად არის ტოლობის ნიშანი. ზედა რიგი 8a-ზეა, ქვედა 9a+7a-ზე. სახელები მერე გაიხსნას.">
+<section class="slide" data-name="გამოსახულება" data-note="ჯერ ჰკითხეთ, სად არის ტოლობის ნიშანი. სახელი მერე გაიხსნას.">
   <div class="wrap">
-    <p class="eyebrow">გამოსახულება, ტოლობა, უტოლობა</p>
-    <h2>სამი სხვადასხვა რამ</h2>
+    <p class="eyebrow">გამოსახულება და ტოლობა</p>
+    <h2>ორი სხვადასხვა რამ</h2>
     <div class="problems tight">
       <div class="problem">
         <div class="eq">8a</div>
@@ -796,11 +729,6 @@ kbd {
         <span id="k2" class="shown" hidden>ტოლობა</span>
       </div>
       <div class="problem">
-        <div class="eq">8a &gt; 50</div>
-        <button class="btn ghost" data-open="k3" type="button">რა არის?</button>
-        <span id="k3" class="shown" hidden>უტოლობა</span>
-      </div>
-      <div class="problem">
         <div class="eq">9a + 7a</div>
         <button class="btn ghost" data-open="k4" type="button">რა არის?</button>
         <span id="k4" class="shown" hidden>გამოსახულება</span>
@@ -810,17 +738,26 @@ kbd {
         <button class="btn ghost" data-open="k5" type="button">რა არის?</button>
         <span id="k5" class="shown" hidden>ტოლობა</span>
       </div>
-      <div class="problem">
-        <div class="eq">16a &gt; 10a</div>
-        <button class="btn ghost" data-open="k6" type="button">რა არის?</button>
-        <span id="k6" class="shown" hidden>უტოლობა</span>
-      </div>
     </div>
-    <p class="rule">გამოსახულებას = არ აქვს. ტოლობას აქვს =. უტოლობას აქვს &gt; ან &lt;. 9a + 7a = 16a განრიგებადობიდან მოდის.</p>
+    <p class="rule">გამოსახულებას = არ აქვს. ტოლობას აქვს =. 9a + 7a = 16a განრიგებადობიდან მოდის.</p>
   </div>
 </section>
 
-<section class="slide" data-name="შეჯამება" data-note="სამმა მოსწავლემ თითო წინადადება თქვას თავისი სიტყვით. ზედა უჯრებს ახედე. სამივე თუ შევსებულია, უთხარი: პარასკევს ათი წუთი მეორე გზაა. ერთი მაინც თუ ცარიელია, ეს ათი წუთი რვეულშია. საშინაო მაინც დაფაზე იწერება, ამ სლაიდზე არა.">
+<section class="slide" data-name="მაგალითები" data-note="გვ. 57 სლაიდზევე კეთდება. ჯერ მიზეზი თქვან, პასუხი მერე გაიხსნას.">
+  <div class="wrap">
+    <p class="eyebrow">გვ. 57</p>
+    <h2>მაგალითები</h2>
+    <div class="hwlist">
+      <article class="hw"><span class="n">1</span><p>თუ a ნებისმიერი რიცხვია, 0 · a = <button class="btn ghost" data-open="ex1" type="button">?</button> <span id="ex1" class="shown" hidden>0</span></p></article>
+      <article class="hw"><span class="n">2</span><p>27 + 27 + 27 + 27 + 27 = <button class="btn ghost" data-open="ex2" type="button">?</button> <span id="ex2" class="shown" hidden>5 · 27</span></p></article>
+      <article class="hw"><span class="n">3</span><p>თუ a = 7, 8a = <button class="btn ghost" data-open="ex3" type="button">?</button> <span id="ex3" class="shown" hidden>56</span></p></article>
+      <article class="hw"><span class="n">4</span><p>თუ a = 0, 11a = <button class="btn ghost" data-open="ex4" type="button">?</button> <span id="ex4" class="shown" hidden>0</span></p></article>
+      <article class="hw"><span class="n">5</span><p>7(a + c) = <button class="btn ghost" data-open="ex5" type="button">?</button> <span id="ex5" class="shown" hidden>7a + 7c. იგივეა (a + c) · 7</span></p></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-name="შეჯამება" data-note="სამმა მოსწავლემ თითო წინადადება თქვას თავისი სიტყვით. მერე გადადით თამაშების სლაიდზე.">
   <div class="wrap">
     <p class="eyebrow">ბოლოს</p>
     <h2>სამი თვისება</h2>
@@ -839,22 +776,24 @@ kbd {
       </article>
       <article class="hw">
         <span class="n">4</span>
-        <p>ერთზე გამრავლება რიცხვს არ ცვლის. ნულზე გამრავლება ნულს იძლევა. 8a გამოსახულებაა, 8a = 56 ტოლობაა, 8a &gt; 50 უტოლობაა.</p>
+        <p>ერთზე გამრავლება რიცხვს არ ცვლის. ნულზე გამრავლება ნულს იძლევა. 8a გამოსახულებაა, 8a = 56 ტოლობაა.</p>
       </article>
     </div>
-    <p class="rule">ზედა სამი უჯრა თუ შევსებული დარჩა, პარასკევს ათი წუთი თამაშია: მეორე გზა.</p>
   </div>
 </section>
 
-<aside class="friday" id="friday">
-  <p>პარასკევი</p>
-  <div class="boxes">
-    <button type="button" data-box="1" aria-label="პირველი უჯრა, 30 დაიჭირეს">1</button>
-    <button type="button" data-box="2" aria-label="მეორე უჯრა, 6·5 და 5·6">2</button>
-    <button type="button" data-box="3" aria-label="მესამე უჯრა, (a+c)·7">3</button>
+<section class="slide" data-name="თამაშები" data-note="გახსენი tamashebi.html. სამი თამაში ზედიზედ, მთელ კლასთან.">
+  <div class="wrap">
+    <p class="eyebrow">კლასში</p>
+    <h2>სამი თამაში</h2>
+    <div class="hwlist">
+      <article class="hw"><span class="n">1</span><p>ბაყაყი სხივზე. ფოთოლს აჭერენ, ნაბიჯი მთელია.</p></article>
+      <article class="hw"><span class="n">2</span><p>საიდუმლო რიცხვი. სამი პირობა, ერთი რიცხვი.</p></article>
+      <article class="hw"><span class="n">3</span><p>ორი ჩანაწერი. იგივე ნამრავლი და თვისების სახელი.</p></article>
+    </div>
+    <p class="rule">ჯერ ეს სლაიდები: ახსნა და მაგალითები. მერე თამაშები.</p>
   </div>
-  <p id="fridayState">0 / 3</p>
-</aside>
+</section>
 
 <footer class="footer">
   <div><b id="footName">სათაური</b></div>
@@ -870,7 +809,7 @@ kbd {
     <h3>როგორ ვმართოთ</h3>
     <p><kbd>→</kbd> შემდეგი &nbsp; <kbd>←</kbd> წინა</p>
     <p><kbd>F</kbd> მთელი ეკრანი &nbsp; <kbd>T</kbd> შენიშვნა</p>
-    <p>პასუხი ღილაკზე იხსნება. ზედა უჯრა დაჭერით ივსება და ისევ დაჭერით იშლება.</p>
+    <p>პასუხი ღილაკზე იხსნება.</p>
     <button class="btn" id="helpClose" type="button">გასაგებია</button>
   </article>
 </div>
@@ -941,28 +880,6 @@ document.querySelectorAll("[data-open]").forEach((btn) => {
     btn.hidden = true;
   });
 });
-
-const boxes = [false, false, false];
-function paintBoxes() {
-  document.querySelectorAll("[data-box]").forEach((btn) => {
-    const on = boxes[Number(btn.dataset.box) - 1];
-    btn.classList.toggle("on", on);
-    btn.setAttribute("aria-pressed", on ? "true" : "false");
-  });
-  const filled = boxes.filter(Boolean).length;
-  const state = document.getElementById("fridayState");
-  state.textContent = filled === 3 ? "თამაშია" : filled + " / 3";
-  state.classList.toggle("won", filled === 3);
-}
-document.querySelectorAll("[data-box]").forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const n = Number(btn.dataset.box) - 1;
-    boxes[n] = !boxes[n];
-    paintBoxes();
-  });
-});
-paintBoxes();
 
 const swapBtn = document.getElementById("swapBtn");
 swapBtn.addEventListener("click", (e) => {

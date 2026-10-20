@@ -170,7 +170,7 @@ body.show-notes .note { display: block; }
       <div><p class="eyebrow">გამრავლების თვისებები</p><h2>ორი ჩანაწერი</h2></div>
       <p class="meta">წყვილი <b id="pairCount">1 / 8</b></p>
     </div>
-    <p class="lead">რომელ ჩანაწერს აქვს იგივე მნიშვნელობა?</p>
+    <p class="lead">რომელი ჩანაწერია იგივე ნამრავლი?</p>
     <p class="show" id="pairShow"></p>
     <div class="opts" id="opts"></div>
     <p class="why" id="pairWhy"></p>
@@ -371,7 +371,7 @@ function showPair() {
   document.getElementById("pairNext").disabled = true;
   document.getElementById("pairShow").textContent = r.show;
   document.getElementById("pairCount").textContent = (pairStep + 1) + " / " + pairRounds.length;
-  document.getElementById("pairWhy").textContent = "აირჩიე იგივე მნიშვნელობის ჩანაწერი.";
+  document.getElementById("pairWhy").textContent = "აირჩიე იგივე ნამრავლის ჩანაწერი.";
   opts.innerHTML = "";
   r.choices.forEach((text, i) => {
     const b = document.createElement("button");
