@@ -101,7 +101,7 @@ h1 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.1rem); margin: 0; 
 .frog .eye.r { right: 8px; }
 .pads { position: relative; display: flex; justify-content: space-between; }
 .pad {
-  width: 64px;
+  width: 48px;
   border: 0;
   background: transparent;
   font-family: inherit;
@@ -151,6 +151,7 @@ h1 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.1rem); margin: 0; 
 }
 .btn.ghost { background: white; color: var(--ink); border-color: var(--line); }
 .btn:disabled { opacity: .4; cursor: default; }
+.btn.ghost.on { background: var(--teal); color: white; border-color: var(--teal); }
 .fine { margin: 0; color: var(--muted); }
 .note {
   position: fixed; left: 24px; right: 24px; bottom: 16px;
@@ -163,8 +164,8 @@ body.show-notes .note { display: block; }
   .slide { padding: 16px 16px 12px; overflow: auto; }
   .top { flex-direction: column; align-items: flex-start; }
   .meta { text-align: left; }
-  .pad { width: 28px; }
-  .pad b { font-size: .85rem; }
+  .pad { width: 22px; }
+  .pad b { font-size: .72rem; }
   .pad i { width: 18px; height: 16px; }
   .frog { transform: scale(.8); transform-origin: center bottom; }
 }
@@ -194,6 +195,8 @@ body.show-notes .note { display: block; }
     <div class="row">
       <button class="btn" id="next" type="button" disabled>შემდეგი ნახტომი</button>
       <button class="btn ghost" id="again" type="button" hidden>თავიდან</button>
+      <button class="btn ghost on" id="easyBtn" type="button">ადვილი</button>
+      <button class="btn ghost" id="hardBtn" type="button">რთული</button>
       <p class="fine" id="found">ნაპოვნი ფოთოლი: 0</p>
     </div>
   </div>
@@ -203,14 +206,26 @@ body.show-notes .note { display: block; }
   <span id="noteText"></span>
 </div>
 <script>
-const rounds = [
-  { from: 0, ans: 3, q: "ბაყაყი საწყისზე, 0-ზე ზის და 3 ნაბიჯს ხტება მარჯვნივ. რომელ ფოთოლზე დაჯდა?", why: "0-დან სამი ნაბიჯია. 3." },
-  { from: 3, ans: 7, q: "იქიდან კიდევ 4 ნაბიჯი მარჯვნივ. სად არის ახლა?", why: "3 + 4 = 7." },
-  { from: 0, ans: 6, q: "საწყისიდან ორი ერთნაირი ნახტომი, თითო 3 ნაბიჯი. სად დაჯდა?", why: "3 + 3 = 6. ორი სამეული ექვსია." },
-  { from: 2, ans: 7, q: "ფოთოლ 2-ზე ზის და კიდევ 5 ნაბიჯით შორდება საწყისს. რომელ რიცხვზეა?", why: "2 + 5 = 7." },
-  { from: 4, ans: 8, q: "ახლა 4-ზეა. უნდა აღმოჩნდეს საწყისიდან ორჯერ შორს. სად დაჯდება?", why: "ორჯერ შორს ნიშნავს 2 · 4 = 8." },
-  { from: 1, ans: 5, q: "1-სა და 9-ს ზუსტ შუაში რომელ ნატურალურ რიცხვზე დგას ფოთოლი?", why: "1-დან 9-მდე 8 ნაბიჯია. ნახევარი 4-ია, ამიტომ 1 + 4 = 5." }
-];
+const sets = {
+  easy: [
+    { from: 0, ans: 3, q: "ბაყაყი საწყისზე, 0-ზე ზის და 3 ნაბიჯს ხტება მარჯვნივ. რომელ ფოთოლზე დაჯდა?", why: "0-დან სამი ნაბიჯია. 3." },
+    { from: 3, ans: 7, q: "იქიდან კიდევ 4 ნაბიჯი მარჯვნივ. სად არის ახლა?", why: "3 + 4 = 7." },
+    { from: 0, ans: 6, q: "საწყისიდან ორი ერთნაირი ნახტომი, თითო 3 ნაბიჯი. სად დაჯდა?", why: "3 + 3 = 6. ორი სამეული ექვსია." },
+    { from: 2, ans: 7, q: "ფოთოლ 2-ზე ზის და კიდევ 5 ნაბიჯით შორდება საწყისს. რომელ რიცხვზეა?", why: "2 + 5 = 7." },
+    { from: 4, ans: 8, q: "ახლა 4-ზეა. უნდა აღმოჩნდეს საწყისიდან ორჯერ შორს. სად დაჯდება?", why: "ორჯერ შორს ნიშნავს 2 · 4 = 8." },
+    { from: 1, ans: 5, q: "1-სა და 9-ს ზუსტ შუაში რომელ ნატურალურ რიცხვზე დგას ფოთოლი?", why: "1-დან 9-მდე 8 ნაბიჯია. ნახევარი 4-ია, ამიტომ 1 + 4 = 5." }
+  ],
+  hard: [
+    { from: 0, ans: 9, q: "საწყისიდან 3 ნაბიჯი წავიდა, იქიდან კიდევ ორჯერ იმდენი. სად დაჯდა?", why: "ჯერ 3. ორჯერ იმდენი 6-ია. 3 + 6 = 9." },
+    { from: 11, ans: 6, q: "11-ზე ზის და 5 ნაბიჯით უკან ბრუნდება, საწყისისკენ. სად არის?", why: "11 − 5 = 6. უკან ითვლი.", hint: "უკან ბრუნდება, საწყისისკენ." },
+    { from: 1, ans: 10, q: "1-დან სამი ნახტომი ზედიზედ: ჯერ 2, მერე 3, მერე 4 ნაბიჯი. სად დაჯდა?", why: "1 + 2 = 3, 3 + 3 = 6, 6 + 4 = 10." },
+    { from: 2, ans: 5, q: "2-დან 6 ნაბიჯი წავიდა მარჯვნივ, მერე 3 ნაბიჯი დაბრუნდა. სად გაჩერდა?", why: "2 + 6 = 8. უკან 3 ნაბიჯი: 8 − 3 = 5.", hint: "ჯერ წინ, მერე უკან." },
+    { from: 12, ans: 6, q: "12-ზე ზის და უნდა აღმოჩნდეს საწყისიდან ორჯერ ახლოს. სად დადგება?", why: "12-ის ნახევარი 6-ია. ორჯერ ახლოს ნიშნავს 6-ს." },
+    { from: 3, ans: 8, q: "ჯერ იპოვე 3-სა და 11-ს შუა ფოთოლი, მერე ერთი ნაბიჯი მარჯვნივ. სად ხარ?", why: "3-დან 11-მდე 8 ნაბიჯია. შუა 7-ია. კიდევ ერთი: 8." }
+  ]
+};
+let level = "easy";
+let rounds = sets.easy;
 
 const pads = document.getElementById("pads");
 const frog = document.getElementById("frog");
@@ -227,7 +242,7 @@ let locked = false;
 let score = 0;
 let spot = 0;
 
-for (let n = 0; n <= 10; n++) {
+for (let n = 0; n <= 12; n++) {
   const b = document.createElement("button");
   b.type = "button";
   b.className = "pad";
@@ -273,7 +288,7 @@ function choose(n) {
     pad.classList.remove("bad");
     void pad.offsetWidth;
     pad.classList.add("bad");
-    why.textContent = "ეს ფოთოლი არ არის. საწყისიდან ნაბიჯები დათვალე, ერთ-ერთით.";
+    why.textContent = r.hint || "ეს ფოთოლი არ არის. საწყისიდან ნაბიჯები დათვალე, ერთ-ერთით.";
     return;
   }
   locked = true;
@@ -283,10 +298,12 @@ function choose(n) {
   placeFrog(n);
   why.textContent = r.why;
   if (step === rounds.length - 1) {
-    prompt.textContent = "ექვსივე ფოთოლი იპოვე. ბაყაყმა სხივი ბოლომდე გაიარა.";
+    prompt.textContent = level === "easy"
+      ? "ადვილი ექვსი გავიარე. რთულზე გადასვლა ღილაკით შეგიძლია."
+      : "რთული ექვსიც გავიარე. ბაყაყმა სხივი ბოლომდე გაიარა.";
     nextBtn.hidden = true;
     againBtn.hidden = false;
-    noteText.textContent = "თავიდან რომ დაიწყოს, ღილაკი „თავიდან“ საკმარისია.";
+    noteText.textContent = "თავიდან ამავე დონეს იწყებს. მეორე დონე ზემოთა ღილაკით იცვლება.";
   } else {
     nextBtn.disabled = false;
   }
@@ -298,12 +315,20 @@ nextBtn.addEventListener("click", () => {
   showRound();
 });
 
-againBtn.addEventListener("click", () => {
+function startLevel(name) {
+  level = name;
+  rounds = sets[name];
   step = 0;
   score = 0;
   found.textContent = "ნაპოვნი ფოთოლი: 0";
+  document.getElementById("easyBtn").classList.toggle("on", name === "easy");
+  document.getElementById("hardBtn").classList.toggle("on", name === "hard");
   showRound();
-});
+}
+
+againBtn.addEventListener("click", () => startLevel(level));
+document.getElementById("easyBtn").addEventListener("click", () => startLevel("easy"));
+document.getElementById("hardBtn").addEventListener("click", () => startLevel("hard"));
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "t" || e.key === "T") document.body.classList.toggle("show-notes");
