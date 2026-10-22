@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ფრჩხილის ხიდი — ჯუფდებადობა და განრიგებადობა</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#16324a; --good:#0f7a45; --bad:#a33b2b; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--ink);
+    font-family: "Noto Sans Georgian", "DejaVu Sans", "Segoe UI", sans-serif;
+    background: linear-gradient(#c5ecff, #e8f7ff 220px, #f6f1e6 220px);
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 16px 14px 40px; }
+  header, .row, .choices, .paths { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  header { justify-content: space-between; }
+  a { color: var(--ink); font-weight: 800; text-decoration: none; }
+  h1 { margin: 8px 0 0; font-size: clamp(28px, 4vw, 40px); }
+  .sub { margin: 4px 0 12px; }
+  .panel { background: white; border-radius: 28px; padding: 16px; box-shadow: 0 16px 0 rgba(22, 80, 110, .12); }
+  .scene { height: 96px; border-radius: 20px; background: linear-gradient(#8fd0ea, #5eb4d6); position: relative; overflow: hidden; margin-bottom: 12px; }
+  .scene .grass { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; background: #7dbe63; }
+  .castle { position: absolute; right: 16px; bottom: 24px; background: #fffaf0; border: 3px solid var(--ink); border-radius: 12px; padding: 6px 10px; font-weight: 800; }
+  .bridge { position: absolute; left: 16px; bottom: 34px; height: 16px; width: 58%; background: #f2c14e; border-radius: 8px; border: 3px solid #8a6412; opacity: .55; }
+  .bridge.on { opacity: 1; }
+  .bridge.two { bottom: 52px; background: #c4b5fd; }
+  .mission { font-size: clamp(20px, 3vw, 28px); font-weight: 800; margin: 0 0 8px; }
+  .eq { font-size: clamp(22px, 4vw, 34px); font-weight: 800; background: #f3f7fb; border-radius: 16px; padding: 10px 12px; }
+  .eq.on { background: #efe7ff; }
+  button, .iconbtn {
+    font-family: inherit; font-weight: 800; cursor: pointer; border-radius: 16px;
+    border: 0; border-bottom: 4px solid rgba(0,0,0,.18); padding: 12px 14px; font-size: 17px;
+    background: #17698a; color: white;
+  }
+  button.ghost, .iconbtn { background: white; color: var(--ink); border: 2px solid #d5e2ea; }
+  button.path { background: white; color: var(--ink); border: 3px solid #d5e2ea; min-width: 220px; text-align: left; }
+  button.path.done { background: #e7f8ee; border-color: #86d3a8; }
+  button.path small, .tiles small { display: block; font-weight: 700; color: #5c6b7a; }
+  button.choice { background: white; color: var(--ink); border: 3px solid #d5e2ea; min-width: 88px; font-size: 22px; }
+  button.choice.bad { background: #ffe4e0; border-color: #e7b0a8; }
+  button.choice.help { animation: pulse .8s ease infinite; }
+  @keyframes pulse { 50% { transform: scale(1.05); } }
+  button:active { transform: translateY(2px); }
+  button:disabled { opacity: .55; cursor: default; }
+  .msg { min-height: 28px; font-weight: 700; }
+  .msg.bad { color: var(--bad); }
+  .msg.ok { color: var(--good); }
+  .tiles { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; margin: 10px 0; }
+  .tiles i, .chip {
+    min-width: 42px; height: 42px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+    background: #efe7ff; border: 2px solid #c4b5fd; font-weight: 800; font-style: normal; padding: 0 8px;
+  }
+  .tiles.merged i { background: #fff4d2; border-color: #e7b008; }
+  .slots { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center; margin: 8px 0; }
+  .slot { min-width: 72px; min-height: 48px; border-radius: 12px; border: 2px dashed #8aa; background: #f7fbfe; font-weight: 800; }
+  .bank { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .stars { color: #d89a08; letter-spacing: 2px; font-size: 22px; }
+  .shake { animation: shake .35s linear; }
+  @keyframes shake { 25% { transform: translateX(-5px);} 75% { transform: translateX(5px);} }
+  .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .confetti b { position: absolute; top: -12px; width: 10px; height: 14px; animation: fall 1.3s ease-in forwards; }
+  @keyframes fall { to { top: 110vh; } }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="index.html">ყველა თამაში</a>
+    <div>
+      <button class="iconbtn" id="mute" type="button">ხმა</button>
+      <button class="iconbtn" id="reset" type="button">თავიდან</button>
+    </div>
+  </header>
+  <h1>ფრჩხილის ხიდი</h1>
+  <p class="sub">ფრჩხილი გადადის ან ჯამი იხსნება. ციხემდე ორივე გზა ერთ რიცხვამდე მიდის.</p>
+  <div class="panel" id="stage"></div>
+</div>
+<script>
+function shuffle(list) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function trapsFor(a, b, answer, extra) {
+  const pool = (extra || []).concat([a + b, a * b, Math.abs(a - b), answer + 1, answer - 1, answer + 2, answer + 10, answer - 10]);
+  const out = [];
+  pool.forEach((n) => {
+    if (!Number.isInteger(n) || n < 0 || n === answer || out.includes(n) || n > 500) return;
+    out.push(n);
+  });
+  let k = 3;
+  while (out.length < 3) {
+    const n = answer + k;
+    k += 1;
+    if (!out.includes(n)) out.push(n);
+  }
+  return out.slice(0, 3);
+}
+function step(a, op, b, extra) {
+  const answer = op === "+" ? a + b : op === "−" ? a - b : a * b;
+  const symbol = op === "*" ? "·" : op;
+  return {
+    q: a + " " + symbol + " " + b + " = ?",
+    answer: String(answer),
+    options: shuffle([String(answer), ...trapsFor(a, b, answer, extra).map(String)])
+  };
+}
+function hand(q, answer, options) {
+  return { q, answer: String(answer), options: shuffle(options.map(String)) };
+}
+
+const LEVELS = [
+  {
+    kind: "assoc", title: "ორი დაჯგუფება", goal: 60,
+    formula: "(a · b) · c = a · (b · c)",
+    note: "ფრჩხილი გადავიდა, ნამრავლი 60 დარჩა. ეს ჯუფდებადობაა.",
+    left: { label: "(3 · 4) · 5", steps: [step(3, "*", 4, [7, 34]), step(12, "*", 5, [17, 50])] },
+    right: { label: "3 · (4 · 5)", steps: [step(4, "*", 5, [9, 45]), step(3, "*", 20, [23, 60])] }
+  },
+  {
+    kind: "assoc", title: "ისევ ერთი 80", goal: 80,
+    formula: "(a · b) · c = a · (b · c)",
+    note: "(8 · 5) · 2 და 8 · (5 · 2) ორივე 80-ია.",
+    left: { label: "(8 · 5) · 2", steps: [step(8, "*", 5, [13, 45]), step(40, "*", 2, [42, 80])] },
+    right: { label: "8 · (5 · 2)", steps: [step(5, "*", 2, [7, 52]), step(8, "*", 10, [18, 88])] }
+  },
+  {
+    kind: "dist", title: "პატარა გახსნა", goal: 20,
+    show: "4 · (3 + 2)",
+    formula: "a(b + c) = ab + ac",
+    note: "ჯერ ფრჩხილშიც 20 გამოდის და ცალ-ცალკეც.",
+    inn: { label: "ჯერ ფრჩხილი", steps: [step(3, "+", 2, [6, 32, 1]), step(4, "*", 5, [9, 45])] },
+    out: { label: "ცალ-ცალკე", steps: [step(4, "*", 3, [7, 43]), step(4, "*", 2, [6, 42]), step(12, "+", 8, [4, 96, 18])] }
+  },
+  {
+    kind: "dist", title: "ხუთი გუნდის ქულა", goal: 65,
+    show: "5 · (9 + 4)",
+    formula: "a(b + c) = ab + ac",
+    note: "თითო გუნდს 9 და კიდევ 4 ქულა. ორივე გზით 65.",
+    inn: { label: "ჯერ ფრჩხილი", steps: [step(9, "+", 4, [12, 94, 5]), step(5, "*", 13, [18, 60, 45])] },
+    out: { label: "ცალ-ცალკე", steps: [step(5, "*", 9, [14, 40, 59]), step(5, "*", 4, [9, 54, 16]), step(45, "+", 20, [25, 60, 70])] }
+  },
+  {
+    kind: "dist", title: "გამოკლებითაც", goal: 25,
+    show: "5 · (9 − 4)",
+    formula: "a(b − c) = ab − ac",
+    note: "ნიშანი რჩება გამოკლება. 45 − 20 = 25.",
+    inn: { label: "ჯერ ფრჩხილი", steps: [step(9, "−", 4, [13, 36, 6]), step(5, "*", 5, [10, 55])] },
+    out: { label: "ცალ-ცალკე", steps: [step(5, "*", 9, [14, 59]), step(5, "*", 4, [9, 54]), step(45, "−", 20, [65, 35, 20])] }
+  },
+  {
+    kind: "dist", title: "სამი შესაკრები", goal: 60,
+    show: "6 · (2 + 3 + 5)",
+    formula: "a(b + c + d) = ab + ac + ad",
+    note: "ექვსი სამივე შესაკრებზე მრავლდება.",
+    inn: { label: "ჯერ ფრჩხილი", steps: [hand("2 + 3 + 5 = ?", 10, [10, 9, 8, 235]), step(6, "*", 10, [16, 66])] },
+    out: { label: "ცალ-ცალკე", steps: [step(6, "*", 2, [8, 62]), step(6, "*", 3, [9, 63]), step(6, "*", 5, [11, 35]), hand("12 + 18 + 30 = ?", 60, [60, 50, 70, 48])] }
+  },
+  {
+    kind: "like", title: "ერთნაირი ასოები",
+    formula: "9a + 7a = (9 + 7)a = 16a",
+    note: "ასო არ იკარგება. 9 ცალი და 7 ცალი არის 16 ცალი a."
+  },
+  {
+    kind: "open", title: "ბოლო კარი",
+    expr: "4(a + c + 2)",
+    need: ["4a", "4c", "8"],
+    chips: ["4a", "4c", "8", "4", "a", "c", "2", "7a", "4a + c"],
+    formula: "4(a + c + 2) = 4a + 4c + 8",
+    note: "4 სამივე წევრზე მრავლდება. 4 · 2 = 8."
+  }
+];
+
+const state = {
+  screen: "intro", i: 0, stars: [], tries: 0, stepTries: 0,
+  active: null, progress: {}, msg: "", kind: "", merged: false, phase: 0,
+  slots: [null, null, null], bank: [], badPicks: new Set(), like1: [], like2: []
+};
+const stage = document.getElementById("stage");
+const Sound = makeSound();
+
+function startLevel() {
+  const L = LEVELS[state.i];
+  state.tries = 0;
+  state.stepTries = 0;
+  state.active = null;
+  state.progress = { left: 0, right: 0, inn: 0, out: 0 };
+  state.msg = "";
+  state.kind = "";
+  state.merged = false;
+  state.phase = 0;
+  state.slots = [null, null, null];
+  state.bank = L.kind === "open" ? shuffle(L.chips.slice()) : [];
+  state.badPicks = new Set();
+  state.like1 = shuffle(["16a", "16", "63a", "9a + 7"]);
+  state.like2 = shuffle(["9a", "9", "45a", "20a"]);
+  state.screen = "level";
+  render();
+}
+
+function pathsOf(L) {
+  if (L.kind === "assoc") return [["left", L.left], ["right", L.right]];
+  if (L.kind === "dist") return [["inn", L.inn], ["out", L.out]];
+  return [];
+}
+
+function bothDone(L) {
+  return pathsOf(L).every(([key, path]) => state.progress[key] >= path.steps.length);
+}
+
+function finishLevel() {
+  const stars = state.tries === 0 ? 3 : state.tries <= 2 ? 2 : 1;
+  state.stars[state.i] = stars;
+  state.screen = "cleared";
+  Sound.win();
+  confetti();
+  render();
+}
+
+function pick(value) {
+  const L = LEVELS[state.i];
+  const paths = Object.fromEntries(pathsOf(L));
+  const path = paths[state.active];
+  const current = path.steps[state.progress[state.active]];
+  if (state.badPicks.has(value)) return;
+  if (value !== current.answer) {
+    state.badPicks.add(value);
+    state.tries += 1;
+    state.stepTries += 1;
+    state.msg = state.stepTries >= 2 ? "ნაბიჯ-ნაბიჯ დათვალე. ჯერ მხოლოდ ეს ორი რიცხვი." : "ეს ნაბიჯი სხვა რიცხვია.";
+    state.kind = "bad";
+    Sound.bad();
+    render();
+    return;
+  }
+  state.badPicks = new Set();
+  state.progress[state.active] += 1;
+  state.stepTries = 0;
+  state.msg = "სწორია.";
+  state.kind = "ok";
+  Sound.ok();
+  if (state.progress[state.active] >= path.steps.length) {
+    state.active = null;
+    state.msg = "ეს გზა ციხემდე მივიდა. მეორე გზაც გავიაროთ.";
+    if (bothDone(L)) return finishLevel();
+  }
+  render();
+}
+
+function openHint() {
+  const s = state.slots.filter(Boolean);
+  if (s.includes("4a + c")) return "4a + c ნიშნავს, რომ 4 მხოლოდ a-ს შეხვდა. c-საც სჭირდება თავისი 4: 4c.";
+  if (s.includes("7a")) return "აქ მამრავლი 4-ია, 7 კი არა.";
+  if (s.includes("2") || s.includes("c") || s.includes("a") || s.includes("4")) return "ცალკე ასო ან ცალკე 2 ცოტაა. 4 უნდა მრავლდებოდეს თითოეულზე: 4a, 4c და 8.";
+  return "სამივე ადგილი შეავსე. 4 მრავლდება a-ზე, c-ზე და 2-ზე.";
+}
+
+function checkOpen() {
+  const L = LEVELS[state.i];
+  if (state.slots.some((x) => !x)) {
+    state.msg = "სამივე ადგილი შეავსე.";
+    state.kind = "bad";
+    render();
+    return;
+  }
+  const got = state.slots.slice().sort().join("|");
+  const need = L.need.slice().sort().join("|");
+  if (got !== need) {
+    state.tries += 1;
+    state.msg = openHint();
+    state.kind = "bad";
+    Sound.bad();
+    render();
+    return;
+  }
+  finishLevel();
+}
+
+function starText(n) { return "★".repeat(n) + "☆".repeat(3 - n); }
+
+function render() {
+  if (state.screen === "intro") {
+    stage.innerHTML = "<h2>ორი გზა, ერთი ციხე</h2><p>ჯუფდებადობა: ფრჩხილი ან მარცხნივ დგას, ან მარჯვნივ. ნამრავლი არ იცვლება.</p><p>განრიგებადობა: ჯამი შეიძლება შიგნით დათვალო, ან მამრავლი თითო შესაკრებს მიაკითხოს.</p><button type=\"button\" data-act=\"start\">ხიდზე ასვლა</button>";
+    return;
+  }
+  if (state.screen === "end") {
+    const total = state.stars.reduce((a, b) => a + b, 0);
+    stage.innerHTML = "<h2>ციხის კარი გაიღო</h2><p class=\"stars\">" + starText(Math.round(total / LEVELS.length)) + "</p><p>" + total + " ვარსკვლავი " + (LEVELS.length * 3) + "-დან.</p><p>ფრჩხილის გადატანა ნამრავლს არ ცვლის. ჯამის გახსნისას მამრავლი ყველა წევრს ხვდება.</p><div class=\"row\"><button type=\"button\" data-act=\"again\">თავიდან</button><a href=\"4-olimpiada.html\"><button type=\"button\">შემდეგი თამაში</button></a></div>";
+    return;
+  }
+  const L = LEVELS[state.i];
+  const lights = L.kind === "assoc" || L.kind === "dist";
+  const leftOn = (L.left && state.progress.left >= L.left.steps.length) || (L.inn && state.progress.inn >= L.inn.steps.length);
+  const rightOn = (L.right && state.progress.right >= L.right.steps.length) || (L.out && state.progress.out >= L.out.steps.length);
+  let html = "<div class=\"scene\"><div class=\"bridge" + (leftOn ? " on" : "") + "\"></div><div class=\"bridge two" + (rightOn ? " on" : "") + "\"></div><div class=\"grass\"></div><div class=\"castle\">" + (L.goal || "a") + "</div></div>";
+  html += "<div>" + (state.i + 1) + " / " + LEVELS.length + " · " + L.title + "</div>";
+
+  if (state.screen === "cleared") {
+    html += "<p class=\"mission\">" + L.note + "</p><p class=\"eq\">" + L.formula + "</p><p class=\"stars\">" + starText(state.stars[state.i]) + "</p><button type=\"button\" data-act=\"next\">" + (state.i === LEVELS.length - 1 ? "შედეგი" : "შემდეგი ხიდი") + "</button>";
+    stage.innerHTML = html;
+    return;
+  }
+
+  if (L.kind === "like") {
+    html += "<p class=\"mission\">9a + 7a რამდენი a-ა?</p>";
+    html += "<div class=\"tiles" + (state.merged ? " merged" : "") + "\">" + "<i>a</i>".repeat(9) + "<b>+</b>" + "<i>a</i>".repeat(7) + "</div>";
+    if (!state.merged) {
+      html += "<button type=\"button\" data-act=\"merge\">გავაერთიანოთ</button>";
+    } else if (state.phase === 0) {
+      html += "<p>9 ცალი a და 7 ცალი a ერთად დადგა.</p><p class=\"eq\">9a + 7a = ?</p><div class=\"choices\">" + state.like1.map((op) => "<button class=\"choice\" type=\"button\" data-act=\"like\" data-v=\"" + op + "\">" + op + "</button>").join("") + "</div>";
+    } else {
+      html += "<p class=\"eq\">4a + 5a = ?</p><div class=\"choices\">" + state.like2.map((op) => "<button class=\"choice\" type=\"button\" data-act=\"like2\" data-v=\"" + op + "\">" + op + "</button>").join("") + "</div>";
+    }
+  } else if (L.kind === "open") {
+    html += "<p class=\"mission\">გახსენი: " + L.expr + "</p><p>4 თითოეულ წევრს უნდა ეწვიოს. ჩააწყვე სამი წევრი.</p>";
+      html += "<div class=\"slots\">" + state.slots.map((s, i) => "<button class=\"slot\" type=\"button\" data-act=\"unslot\" data-i=\"" + i + "\">" + (s || "…") + "</button>" + (i < 2 ? "<b>+</b>" : "")).join("") + "</div>";
+    html += "<div class=\"bank\">" + state.bank.map((chip, i) => "<button class=\"chip\" type=\"button\" data-act=\"slot\" data-i=\"" + i + "\">" + chip + "</button>").join("") + "</div>";
+    html += "<div class=\"row\"><button type=\"button\" data-act=\"check-open\">შევამოწმოთ</button></div>";
+  } else {
+    html += "<p class=\"mission\">" + (L.show || "ორივე დაჯგუფება ერთ ციხეს უნდა მიუახლოვდეს") + "</p>";
+    if (!state.active) {
+      html += "<div class=\"paths\">" + pathsOf(L).map(([key, path]) => {
+        const done = state.progress[key] >= path.steps.length;
+        return "<button class=\"path" + (done ? " done" : "") + "\" type=\"button\" data-act=\"path\" data-key=\"" + key + "\"" + (done ? " disabled" : "") + ">" + path.label + "<small>" + (done ? "გავლილია" : "ამ გზით დათვლა") + "</small></button>";
+      }).join("") + "</div>";
+    } else {
+      const path = Object.fromEntries(pathsOf(L))[state.active];
+      const current = path.steps[state.progress[state.active]];
+      html += "<p class=\"eq on\">" + path.label + "</p><p class=\"mission\">" + current.q + "</p><div class=\"choices shake-box\">" + current.options.map((op) => {
+        const help = state.stepTries >= 3 && op === current.answer ? "help" : "";
+        const bad = state.badPicks.has(op) ? "bad " : "";
+        return "<button class=\"choice " + bad + help + "\" type=\"button\" data-act=\"pick\" data-v=\"" + op + "\">" + op + "</button>";
+      }).join("") + "</div><div class=\"row\"><button class=\"ghost\" type=\"button\" data-act=\"back\">გზის შეცვლა</button></div>";
+    }
+  }
+  html += "<p class=\"msg " + state.kind + "\" role=\"status\">" + state.msg + "</p>";
+  stage.innerHTML = html;
+  if (state.kind === "bad") stage.classList.add("shake");
+  else stage.classList.remove("shake");
+}
+
+stage.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  const act = btn.dataset.act;
+  if (act === "start" || act === "again") { state.i = 0; state.stars = []; startLevel(); return; }
+  if (act === "next") {
+    if (state.i >= LEVELS.length - 1) { state.screen = "end"; Sound.win(); render(); return; }
+    state.i += 1; startLevel(); return;
+  }
+  if (act === "path") {
+    state.active = btn.dataset.key;
+    state.stepTries = 0;
+    state.badPicks = new Set();
+    state.msg = state.active === "out" ? "მამრავლი თითო წევრს ეწვევა. ჯერ პირველი ნამრავლი დათვალე." : "ჯერ ფრჩხილში ჩასმული ნაწილი დათვალე.";
+    state.kind = "";
+    render();
+    return;
+  }
+  if (act === "back") { state.active = null; state.msg = ""; render(); return; }
+  if (act === "pick") return pick(btn.dataset.v);
+  if (act === "merge") { state.merged = true; state.msg = "ახლა თქვი, რამდენი a დგას."; state.kind = "ok"; Sound.tap(); render(); return; }
+  if (act === "like") {
+    if (btn.dataset.v !== "16a") { state.tries++; state.msg = "9 და 7 ერთდება, a კი რჩება. არც 16, არც 63a."; state.kind = "bad"; Sound.bad(); render(); return; }
+    state.phase = 1; state.msg = "კი, 16a. ოქროს უჯრა: ახლა 4a + 5a."; state.kind = "ok"; Sound.ok(); render(); return;
+  }
+  if (act === "like2") {
+    if (btn.dataset.v !== "9a") { state.tries++; state.msg = "4 ცალი a და 5 ცალი a არის 9a. რიცხვები ერთმანეთზე არ მრავლდება."; state.kind = "bad"; Sound.bad(); render(); return; }
+    return finishLevel();
+  }
+  if (act === "slot") {
+    const empty = state.slots.findIndex((x) => !x);
+    if (empty < 0) return;
+    const chip = state.bank.splice(Number(btn.dataset.i), 1)[0];
+    state.slots[empty] = chip;
+    Sound.tap(); render(); return;
+  }
+  if (act === "unslot") {
+    const i = Number(btn.dataset.i);
+    if (!state.slots[i]) return;
+    state.bank.push(state.slots[i]);
+    state.slots[i] = null;
+    render(); return;
+  }
+  if (act === "check-open") return checkOpen();
+});
+
+document.getElementById("reset").onclick = () => { state.screen = "intro"; state.stars = []; render(); };
+document.getElementById("mute").onclick = () => { document.getElementById("mute").textContent = Sound.toggle() ? "ჩუმად" : "ხმა"; };
+document.getElementById("mute").textContent = Sound.muted ? "ჩუმად" : "ხმა";
+render();
+
+function confetti() {
+  const layer = document.createElement("div");
+  layer.className = "confetti";
+  for (let i = 0; i < 32; i++) {
+    const s = document.createElement("b");
+    s.style.left = Math.random() * 100 + "%";
+    s.style.background = ["#f2c14e", "#17698a", "#7c5cbf", "#16a34a"][i % 4];
+    layer.appendChild(s);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 1400);
+}
+function makeSound() {
+  let ctx, muted = false;
+  try { muted = localStorage.getItem("gt-mute") === "1"; } catch (e) {}
+  function ac() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(freq, dur, when) {
+    if (muted) return;
+    try {
+      const c = ac();
+      const t = c.currentTime + (when || 0);
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.05, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    } catch (e) {}
+  }
+  return {
+    get muted() { return muted; },
+    toggle() { muted = !muted; try { localStorage.setItem("gt-mute", muted ? "1" : "0"); } catch (e) {} return muted; },
+    ok() { tone(523, .1); tone(784, .14, .08); },
+    bad() { tone(180, .16); },
+    tap() { tone(520, .04); },
+    win() { [523, 659, 784, 1046].forEach((f, i) => tone(f, .16, i * .09)); }
+  };
+}
+</script>
+</body>
+</html>
