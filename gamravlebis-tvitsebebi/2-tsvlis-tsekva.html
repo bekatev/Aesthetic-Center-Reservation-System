@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>წყვილების ცეკვა — გამრავლების თვისებები</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#241b33; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: #f7f1e6;
+    font-family: "Noto Sans Georgian", "DejaVu Sans", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(500px 240px at 50% 0%, rgba(244, 196, 92, .35), transparent 60%),
+      #2a2140;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 16px 14px 36px; }
+  header, .bar { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+  a { color: #f7f1e6; font-weight: 800; text-decoration: none; }
+  h1 { margin: 12px 0 0; font-size: clamp(28px, 4vw, 42px); color: white; }
+  .sub { margin: 4px 0 12px; color: #e4d8f4; }
+  .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; width: 100%; }
+  .card {
+    appearance: none; -webkit-appearance: none;
+    display: block; width: 100%; min-height: 124px;
+    border: 0; padding: 0; background: transparent; cursor: pointer;
+    font-family: inherit; color: inherit;
+  }
+  .inner { display: block; min-height: 124px; }
+  .face {
+    box-sizing: border-box; min-height: 124px; border-radius: 18px;
+    display: none; align-items: center; justify-content: center; text-align: center;
+    padding: 10px; font-weight: 800;
+  }
+  .card .back { display: flex; }
+  .card.up .back, .card.done .back { display: none; }
+  .card.up .front, .card.done .front { display: flex; }
+  .back {
+    background:
+      radial-gradient(circle at 18% 22%, rgba(255,255,255,.45) 0 10%, transparent 11%),
+      radial-gradient(circle at 78% 30%, rgba(255,255,255,.28) 0 12%, transparent 13%),
+      radial-gradient(circle at 50% 78%, rgba(255,255,255,.22) 0 9%, transparent 10%),
+      linear-gradient(160deg, #ffe08a, #e2a31a);
+    color: #3b2a08; font-size: 34px;
+    border: 4px solid #fff8e1;
+    box-shadow: 0 8px 0 #8a6412;
+  }
+  .front {
+    background: #fffaf2; color: var(--ink);
+    flex-direction: column; gap: 6px; box-shadow: 0 8px 0 rgba(0,0,0,.25);
+    border: 4px solid #fff;
+  }
+  .front em { font-style: normal; font-size: 16px; line-height: 1.25; }
+  .front small { font-size: 12px; color: #6b4ea3; }
+  .card.done .front { background: #fff4d2; }
+  .panel {
+    background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.12);
+    border-radius: 24px; padding: 16px;
+  }
+  button.act, .iconbtn {
+    font-family: inherit; font-weight: 800; border: 0; border-radius: 14px; cursor: pointer;
+    padding: 12px 16px; background: #f2c14e; color: #2a2140; border-bottom: 4px solid #c8921a;
+  }
+  .iconbtn { background: transparent; color: white; border: 2px solid rgba(255,255,255,.3); border-bottom-width: 2px; padding: 8px 12px; }
+  button:active { transform: translateY(2px); }
+  .msg { min-height: 48px; font-weight: 700; margin: 12px 0 0; color: #ffe7a3; }
+  .stats b { font-size: 22px; }
+  .hero h2 { margin-top: 0; color: white; font-size: 30px; }
+  .list { display: grid; gap: 8px; margin: 12px 0; }
+  .list div { background: rgba(255,255,255,.08); border-radius: 12px; padding: 8px 10px; }
+  .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .confetti i { position: absolute; top: -12px; width: 10px; height: 14px; animation: fall 1.4s ease-in forwards; }
+  @keyframes fall { to { top: 110vh; } }
+  :focus-visible { outline: 3px solid #f2c14e; outline-offset: 3px; }
+  @media (max-width: 720px) {
+    .board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .front em { font-size: 18px; }
+  }
+  .card.up .front { animation: pop .18s ease; }
+  @keyframes pop { from { transform: scale(.92); } to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .card.up .front { animation: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="index.html">ყველა თამაში</a>
+    <div>
+      <button class="iconbtn" id="mute" type="button">ხმა</button>
+      <button class="iconbtn" id="reset" type="button">თავიდან</button>
+    </div>
+  </header>
+  <h1>წყვილების ცეკვა</h1>
+  <p class="sub">ორი ჩანაწერი წყვილია, თუ ერთსა და იმავე რიცხვს იძლევა.</p>
+  <div id="stage"></div>
+</div>
+<script>
+const ROUNDS = [
+  [
+    ["6 · 5", "5 · 6", "გადანაცვლებადობა", "მამრავლები ადგილს ცვლიან და ნამრავლი იგივე რჩება."],
+    ["(3 · 4) · 5", "3 · (4 · 5)", "ჯუფდებადობა", "ფრჩხილი გადავიდა, ორივე მხარეს 60 რჩება."],
+    ["5 · (9 + 4)", "5 · 9 + 5 · 4", "განრიგებადობა", "ფრჩხილში ჯამია. 5 ორივე შესაკრებზე მრავლდება."],
+    ["4 · (7 − 2)", "4 · 7 − 4 · 2", "განრიგებადობა", "გამოკლებაზეც იგივე წესია: a(b − c) = ab − ac."],
+    ["8 · 1", "8", "ერთის თვისება", "ერთზე გამრავლება რიცხვს არ ცვლის."],
+    ["9 · 0", "0", "ნულის თვისება", "ნულზე გამრავლება ყოველთვის ნულს იძლევა."]
+  ],
+  [
+    ["a · b", "b · a", "გადანაცვლებადობა", "ფორმულა ასე იწერება: a · b = b · a."],
+    ["9a + 7a", "16a", "განრიგებადობა", "9 ცალი a და 7 ცალი a არის 16a. არც 9 და არც 63a."],
+    ["4a + 5a", "9a", "განრიგებადობა", "4 ცალი a და 5 ცალი a — სულ 9a."],
+    ["6 · (2 + 3 + 5)", "6 · 2 + 6 · 3 + 6 · 5", "განრიგებადობა", "სამ შესაკრებზეც ექვსი ყველაზე მრავლდება."],
+    ["8a", "8 · a", "მოკლე ჩანაწერი", "a გამრავლებული 8-ზე იწერება 8a. ეს იგივეა, რაც 8 · a."],
+    ["11 · 0", "0", "ნულის თვისება", "11 · 0 = 0. ნული ნებისმიერ რიცხვთან ნულს იძლევა."]
+  ]
+];
+
+const state = { screen: "intro", round: 0, deck: [], moves: 0, lock: false, msg: "", found: [] };
+const stage = document.getElementById("stage");
+const Sound = makeSound();
+let flipToken = 0;
+
+function shuffle(list) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function bestKey() { return "gt-memo-" + state.round; }
+function readBest() {
+  try { return Number(localStorage.getItem(bestKey())) || 0; } catch (e) { return 0; }
+}
+function saveBest() {
+  const old = readBest();
+  if (!old || state.moves < old) {
+    try { localStorage.setItem(bestKey(), String(state.moves)); } catch (e) {}
+  }
+}
+
+function deal(round) {
+  const pairs = ROUNDS[round];
+  const cards = [];
+  pairs.forEach((row, pair) => {
+    [0, 1].forEach((side) => {
+      cards.push({ text: row[side], prop: row[2], why: row[3], pair, up: false, done: false });
+    });
+  });
+  state.deck = shuffle(cards);
+  state.moves = 0;
+  state.lock = false;
+  state.msg = "ჯერ ერთი ბარათი, მერე მეორე.";
+  state.found = [];
+  state.screen = "play";
+  flipToken++;
+  render();
+}
+
+function mismatchHint(a, b) {
+  const t = [a.text, b.text];
+  if (t.includes("9a + 7a") && t.includes("9a")) return "9a + 7a არის 16a, არა 9a. ცხრა და შვიდი ცალი a ერთდება.";
+  if (t.includes("4a + 5a") && t.includes("16a")) return "4a + 5a არის 9a. 16a სხვა ჯამიდან მოდის.";
+  if (t.includes("8a") && (t.includes("16a") || t.includes("9a"))) return "8a იგივეა, რაც 8 · a. სხვა ჯამს ნუ შეუდარებ.";
+  return "ეს ორი ჩანაწერი ტოლი არ არის. კიდევ სცადე.";
+}
+
+function onCard(index) {
+  if (state.lock || state.screen !== "play") return;
+  const card = state.deck[index];
+  if (!card || card.up || card.done) return;
+  card.up = true;
+  const open = state.deck.filter((c) => c.up && !c.done);
+  if (open.length === 2) state.lock = true;
+  Sound.tap();
+  render();
+  if (open.length < 2) return;
+  state.moves += 1;
+  const [a, b] = open;
+  if (a.pair === b.pair) {
+    a.done = true;
+    b.done = true;
+    state.found.push(a.prop + ": " + a.text + " = " + b.text);
+    state.msg = a.prop + ". " + a.why;
+    state.lock = false;
+    Sound.ok();
+    if (state.deck.every((c) => c.done)) {
+      state.screen = "win";
+      saveBest();
+      Sound.win();
+      confetti();
+    }
+    render();
+    return;
+  }
+  state.msg = mismatchHint(a, b);
+  Sound.bad();
+  render();
+  const token = ++flipToken;
+  setTimeout(() => {
+    if (token !== flipToken) return;
+    a.up = false;
+    b.up = false;
+    state.lock = false;
+    if (state.screen === "play") render();
+  }, 1000);
+}
+
+function render() {
+  if (state.screen === "intro") {
+    stage.innerHTML = "<div class=\"panel hero\"><h2>იპოვე ტოლი ჩანაწერები</h2><p>6 · 5 და 5 · 6 ერთმანეთს ჰგავს, რადგან ადგილის გაცვლა ნამრავლს არ ცვლის. ფრჩხილიც და გახსნილ ჯამსაც თავისი წყვილი ჰყავს.</p><p>პირველ ცეკვაში რიცხვებია. მეორეში ასოებიც შემოდის.</p><button class=\"act\" type=\"button\" data-act=\"play\" data-round=\"0\">პირველი ცეკვა</button></div>";
+    return;
+  }
+  const best = readBest();
+  if (state.screen === "win") {
+    const more = state.round === 0
+      ? "<button class=\"act\" type=\"button\" data-act=\"play\" data-round=\"1\">მეორე ცეკვა · ასოები</button>"
+      : "<a href=\"3-frchkhili.html\"><button class=\"act\" type=\"button\">შემდეგი თამაში</button></a>";
+    stage.innerHTML = "<div class=\"panel hero\"><h2>" + (state.round === 0 ? "პირველი ცეკვა მორჩა" : "ორივე ცეკვა მორჩა") + "</h2><p>სვლა: <b>" + state.moves + "</b>" + (best ? " · საუკეთესო: " + best : "") + "</p><div class=\"list\">" + state.found.map((line) => "<div>" + line + "</div>").join("") + "</div><div class=\"bar\">" + more + "<button class=\"act\" type=\"button\" data-act=\"play\" data-round=\"" + state.round + "\">ისევ ეს ცეკვა</button></div></div>";
+    return;
+  }
+  const cards = state.deck.map((card, i) => {
+    const cls = (card.up || card.done ? "up" : "") + (card.done ? " done" : "");
+    const note = card.done ? "<small>" + card.prop + "</small>" : "";
+    return "<button class=\"card " + cls + "\" type=\"button\" data-act=\"card\" data-i=\"" + i + "\"><span class=\"inner\"><span class=\"face back\">✦</span><span class=\"face front\"><em>" + card.text + "</em>" + note + "</span></span></button>";
+  }).join("");
+  stage.innerHTML = "<div class=\"bar\"><div class=\"stats\">ცეკვა <b>" + (state.round + 1) + "</b> / 2 · სვლა <b>" + state.moves + "</b>" + (best ? " · რეკორდი " + best : "") + "</div></div><div class=\"board\">" + cards + "</div><p class=\"msg\" role=\"status\">" + state.msg + "</p>";
+}
+
+stage.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  if (btn.dataset.act === "play") {
+    state.round = Number(btn.dataset.round);
+    deal(state.round);
+    return;
+  }
+  if (btn.dataset.act === "card") onCard(Number(btn.dataset.i));
+});
+
+document.getElementById("reset").onclick = () => { flipToken++; state.screen = "intro"; render(); };
+document.getElementById("mute").onclick = () => {
+  document.getElementById("mute").textContent = Sound.toggle() ? "ჩუმად" : "ხმა";
+};
+document.getElementById("mute").textContent = Sound.muted ? "ჩუმად" : "ხმა";
+render();
+
+function confetti() {
+  const layer = document.createElement("div");
+  layer.className = "confetti";
+  ["#f2c14e", "#fff", "#c4b5fd", "#fb7185", "#86efac"].forEach((color, n) => {
+    for (let i = 0; i < 7; i++) {
+      const s = document.createElement("i");
+      s.style.left = (n * 18 + i * 3) + "%";
+      s.style.background = color;
+      s.style.animationDelay = (i * 0.05) + "s";
+      layer.appendChild(s);
+    }
+  });
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 1500);
+}
+function makeSound() {
+  let ctx, muted = false;
+  try { muted = localStorage.getItem("gt-mute") === "1"; } catch (e) {}
+  function ac() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(freq, dur, when) {
+    if (muted) return;
+    try {
+      const c = ac();
+      const t = c.currentTime + (when || 0);
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.05, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    } catch (e) {}
+  }
+  return {
+    get muted() { return muted; },
+    toggle() { muted = !muted; try { localStorage.setItem("gt-mute", muted ? "1" : "0"); } catch (e) {} return muted; },
+    ok() { tone(523, .1); tone(784, .14, .08); },
+    bad() { tone(180, .16); },
+    tap() { tone(520, .04); },
+    win() { [523, 659, 784, 1046].forEach((f, i) => tone(f, .16, i * .09)); }
+  };
+}
+</script>
+</body>
+</html>

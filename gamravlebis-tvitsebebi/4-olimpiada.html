@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>თვისებების ოლიმპიადა</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#2a1216; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--ink);
+    font-family: "Noto Sans Georgian", "DejaVu Sans", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(700px 280px at 50% -40px, #ffd36a, transparent 60%),
+      linear-gradient(#fff7ea, #f6e4c4 240px, #f3efe6 240px);
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 16px 14px 40px; }
+  header, .bar { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+  a { color: var(--ink); font-weight: 800; text-decoration: none; }
+  h1 { font-size: clamp(28px, 4vw, 44px); margin: 8px 0 0; }
+  .sub { margin-top: 4px; }
+  .scoreboard {
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+    background: #8e1e2a; color: white; border-radius: 22px; padding: 12px 14px; margin: 12px 0;
+  }
+  .hearts { letter-spacing: 2px; font-size: 22px; }
+  .score b { font-size: 28px; }
+  .ring { width: 54px; height: 54px; }
+  .ring circle { fill: none; stroke-width: 5; }
+  .track { stroke: rgba(255,255,255,.25); }
+  .barstroke { stroke: #ffe08a; stroke-dasharray: 100.5; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+  .panel { background: white; border-radius: 28px; padding: 18px; box-shadow: 0 14px 0 rgba(142, 30, 42, .12); }
+  .expr { font-size: clamp(26px, 4vw, 40px); font-weight: 800; text-align: center; margin: 8px 0 14px; line-height: 1.3; }
+  .round { font-weight: 800; color: #8e1e2a; }
+  .opts, .bins { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  button, .iconbtn {
+    font-family: inherit; font-weight: 800; cursor: pointer; border-radius: 16px;
+    border: 0; border-bottom: 4px solid rgba(0,0,0,.2); padding: 12px 14px; font-size: 17px;
+  }
+  .iconbtn { background: white; color: var(--ink); border: 2px solid #ead8c4; }
+  button.go { background: #8e1e2a; color: white; }
+  button.opt { background: #fffaf3; color: var(--ink); border: 3px solid #ead8c4; min-width: 140px; }
+  button.opt.good, button.bin.good { background: #e5f8ee; border-color: #86d3a8; }
+  button.opt.bad, button.bin.bad { background: #ffe1e1; border-color: #e7a8a4; }
+  button.y { background: #fff4d4; }
+  button.v { background: #f3e8ff; }
+  button.g { background: #e5f8ee; }
+  button.r { background: #ffe8e4; }
+  button.s { background: #e7f0f6; }
+  button.bin { min-width: 180px; background: white; border: 3px solid #ead8c4; }
+  .msg { min-height: 52px; font-weight: 700; }
+  .streak { color: #c2410c; font-weight: 800; }
+  .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .confetti i { position: absolute; top: -12px; width: 10px; height: 14px; animation: fall 1.4s ease-in forwards; }
+  @keyframes fall { to { top: 110vh; } }
+  :focus-visible { outline: 3px solid #8e1e2a; outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="index.html">ყველა თამაში</a>
+    <div>
+      <button class="iconbtn" id="mute" type="button">ხმა</button>
+      <button class="iconbtn" id="reset" type="button">თავიდან</button>
+    </div>
+  </header>
+  <h1>თვისებების ოლიმპიადა</h1>
+  <p class="sub">ოთხი რაუნდი: თვისება, სვეტი, პასუხი და სწორი-არასწორი.</p>
+  <div class="scoreboard">
+    <div class="hearts" id="hearts">♥♥♥</div>
+    <div class="score">ქულა <b id="score">0</b> <span class="streak" id="streak"></span></div>
+    <svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="track" cx="20" cy="20" r="16"/><circle class="barstroke" id="ring" cx="20" cy="20" r="16"/></svg>
+  </div>
+  <div class="panel" id="stage"></div>
+</div>
+<script>
+const PROPS = ["გადანაცვლებადობა", "ჯუფდებადობა", "განრიგებადობა", "ერთის თვისება", "ნულის თვისება"];
+const PROP_CLASS = ["y", "v", "g", "r", "s"];
+const PROP_Q = [
+  ["6 · 5 = 5 · 6", "გადანაცვლებადობა", "მამრავლები ადგილს ცვლიან, ნამრავლი არა."],
+  ["(3 · 4) · 5 = 3 · (4 · 5)", "ჯუფდებადობა", "ფრჩხილში ნამრავლი წერია. ფრჩხილი გადავიდა, 60 დარჩა."],
+  ["5 · (9 + 4) = 5 · 9 + 5 · 4", "განრიგებადობა", "ფრჩხილში ჯამია. 5 ორივე შესაკრებზე მრავლდება."],
+  ["8 · 1 = 8", "ერთის თვისება", "ერთზე გამრავლება რიცხვს არ ცვლის."],
+  ["9 · 0 = 0", "ნულის თვისება", "ნულზე გამრავლება ნულს იძლევა."],
+  ["4 · (7 − 2) = 4 · 7 − 4 · 2", "განრიგებადობა", "გამოკლებაზეც იგივე წესია: a(b − c) = ab − ac."]
+];
+const SORT_Q = [
+  ["8a", "გამოსახულება"],
+  ["8a = 56", "ტოლობა"],
+  ["8a > 50", "უტოლობა"],
+  ["9a + 7a", "გამოსახულება"],
+  ["9a + 7a = 16a", "ტოლობა"],
+  ["16a > 10a", "უტოლობა"]
+];
+const VALUE_Q = [
+  ["თუ a ნებისმიერი რიცხვია, 0 · a = ?", ["a", "2a", "0", "4a"], "0", "ნულის თვისებაა. 0 · a = 0."],
+  ["27 + 27 + 27 + 27 + 27 = ?", ["5 · 27", "5 + 27", "4 · 27", "3 · 27"], "5 · 27", "ხუთი ერთნაირი შესაკრებია. ეს 5 · 27-ია."],
+  ["თუ a = 7, მაშინ 8a = ?", ["55", "56", "57", "87"], "56", "8a = 8 · a = 8 · 7 = 56."],
+  ["თუ a = 0, მაშინ 11a = ?", ["2", "110", "0", "10"], "0", "11 · 0 = 0. ისევ ნულის თვისებაა."],
+  ["7(a + c) = ?", ["7a", "7c", "7a + 7c", "7a + c"], "7a + 7c", "7 ორივე შესაკრებზე მრავლდება. ერთ წევრზე არ რჩება."],
+  ["5 · (9 − 4) = ?", ["25", "45", "1", "65"], "25", "ჯერ 9 − 4 = 5, მერე 5 · 5 = 25. მეორე გზა: 45 − 20."]
+];
+const TF_Q = [
+  ["ადგილის გაცვლა ნამრავლს არ ცვლის.", true, "ეს გადანაცვლებადობაა: a · b = b · a."],
+  ["ფრჩხილის გადატანა ნამრავლს ცვლის.", false, "არა. ჯუფდებადობაში ფრჩხილი გადადის, ნამრავლი რჩება."],
+  ["7(a + c) = 7a + c", false, "7 ორივეზე მრავლდება: 7a + 7c."],
+  ["9a + 7a = 16a", true, "9 ცალი a და 7 ცალი a არის 16a."],
+  ["ნულზე გამრავლება ყოველთვის ნულს იძლევა.", true, "0 · a = 0."],
+  ["4(a + c + 2) = 4a + 4c + 8", true, "განრიგებადობა სამ წევრზე. 4 · 2 = 8."]
+];
+
+const PHASES = [
+  { id: "prop", title: "რაუნდი 1 · რომელი თვისებაა?", lead: "ჯერ დაასახელე თვისება. ფრჩხილში ნამრავლი წერია თუ ჯამი?", timed: 12, list: PROP_Q },
+  { id: "sort", title: "რაუნდი 2 · სამი სვეტი", lead: "ნიშანი არაა — გამოსახულება. = ტოლობაა. > ან < უტოლობაა.", timed: 0, list: SORT_Q },
+  { id: "value", title: "რაუნდი 3 · ჯერ მიზეზი, მერე პასუხი", lead: "გვერდი 57-ის კითხვები. დრო იწურება, მაგრამ ახსნა რჩება.", timed: 14, list: VALUE_Q },
+  { id: "tf", title: "ფინალი · სწორია თუ არა?", lead: "წინადადებას ყურადღებით წაიკითხე. აქ დრო არ გიჩქარებს.", timed: 0, list: TF_Q }
+];
+
+const state = { phase: -1, qi: 0, ready: false, score: 0, hearts: 3, streak: 0, mistakes: 0, msg: "", answered: false, locked: false, mark: "", markOk: false };
+const stage = document.getElementById("stage");
+const Sound = makeSound();
+let timerGen = 0;
+let flow = 0;
+let remainFrac = 1;
+
+function later(fn, ms) {
+  const token = ++flow;
+  setTimeout(() => { if (token === flow) fn(); }, ms);
+}
+function stopTimer() { timerGen++; }
+function startTimer(seconds) {
+  stopTimer();
+  const gen = timerGen;
+  const t0 = performance.now();
+  remainFrac = 1;
+  function frame(now) {
+    if (gen !== timerGen) return;
+    remainFrac = Math.max(0, 1 - (now - t0) / (seconds * 1000));
+    const ring = document.getElementById("ring");
+    if (ring) ring.style.strokeDashoffset = String(100.5 * (1 - remainFrac));
+    if (remainFrac <= 0) { expire(); return; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+function paintHud() {
+  document.getElementById("score").textContent = String(state.score);
+  document.getElementById("hearts").textContent = "♥".repeat(state.hearts) + "♡".repeat(3 - state.hearts);
+  document.getElementById("streak").textContent = state.streak >= 3 ? "×2 ცეცხლი" : (state.streak ? state.streak + " ზედიზედ" : "");
+  const ring = document.getElementById("ring");
+  if (ring) ring.style.strokeDashoffset = String(100.5 * (1 - remainFrac));
+}
+function currentPhase() { return PHASES[state.phase]; }
+
+function begin(i) {
+  stopTimer();
+  flow++;
+  state.phase = i;
+  state.qi = 0;
+  state.ready = false;
+  state.msg = "";
+  state.answered = false;
+  state.mark = "";
+  state.markOk = false;
+  remainFrac = 1;
+  render();
+}
+function arm() {
+  state.ready = true;
+  state.answered = false;
+  state.mark = "";
+  state.markOk = false;
+  state.msg = "";
+  remainFrac = 1;
+  render();
+  const phase = currentPhase();
+  if (phase.timed) startTimer(phase.timed);
+}
+function award(base) {
+  const bonus = currentPhase().timed ? Math.round(remainFrac * 40) : 0;
+  const mult = state.streak >= 3 ? 2 : 1;
+  state.score += (base + bonus) * mult;
+}
+function miss(why) {
+  state.mistakes += 1;
+  state.streak = 0;
+  if (currentPhase().timed) state.hearts = Math.max(0, state.hearts - 1);
+  state.msg = why + (state.hearts === 0 ? " გულები გათავდა, რბოლა მაინც გრძელდება." : "");
+  Sound.bad();
+}
+function good(why) {
+  state.streak += 1;
+  award(100);
+  state.msg = "კი. " + why + (state.streak >= 3 ? " ქულა გაორმაგდა." : "");
+  Sound.ok();
+}
+function advance() {
+  const phase = currentPhase();
+  if (state.qi < phase.list.length - 1) {
+    state.qi += 1;
+    arm();
+    return;
+  }
+  if (state.phase < PHASES.length - 1) begin(state.phase + 1);
+  else finish();
+}
+function finish() {
+  stopTimer();
+  state.phase = 99;
+  Sound.win();
+  confetti();
+  render();
+}
+function expire() {
+  if (state.answered) return;
+  state.answered = true;
+  state.locked = true;
+  const item = currentPhase().list[state.qi];
+  const why = currentPhase().id === "prop" ? item[2] : item[3];
+  miss("დრო ამოიწურა. " + why);
+  render();
+  later(() => { state.locked = false; advance(); }, 1700);
+}
+function propHint(correct, picked) {
+  const pair = [correct, picked];
+  if (pair.includes("ჯუფდებადობა") && pair.includes("განრიგებადობა")) {
+    return "ფრჩხილში ნამრავლი წერია თუ ჯამი? ნამრავლი — ჯუფდებადობა. ჯამი ან სხვაობა — განრიგებადობა.";
+  }
+  return PROP_Q[state.qi][2];
+}
+
+function render() {
+  paintHud();
+  if (state.phase < 0) {
+    stage.innerHTML = "<h2>სტადიონი იხსნება</h2><p>ექვსი გამოსახულება, ექვსი სვეტი, ექვსი პასუხი და ექვსი წინადადება. სამი გული გაქვს. ზედიზედ სამი სწორი პასუხი ქულას აორმაგებს.</p><button class=\"go\" type=\"button\" data-act=\"begin\">ოლიმპიადის დაწყება</button>";
+    return;
+  }
+  if (state.phase === 99) {
+    const stars = state.mistakes <= 1 ? 3 : state.mistakes <= 5 ? 2 : 1;
+    stage.innerHTML = "<h2>ფინალი დასრულდა</h2><p class=\"expr\">" + state.score + " ქულა</p><p>" + "★".repeat(stars) + "☆".repeat(3 - stars) + " · შეცდომა " + state.mistakes + "</p><p>ადგილის გაცვლა, ფრჩხილის გადატანა და ჯამის გახსნა — სამი დიდი თვისებაა. ერთი რიცხვს ტოვებს, ნული კი ნულს იძლევა.</p><div class=\"opts\"><button class=\"go\" type=\"button\" data-act=\"begin\">თავიდან</button><a href=\"index.html\"><button type=\"button\">ყველა თამაში</button></a></div>";
+    return;
+  }
+  const phase = currentPhase();
+  if (!state.ready) {
+    stage.innerHTML = "<div class=\"round\">" + phase.title + "</div><p class=\"expr\">" + phase.lead + "</p><button class=\"go\" type=\"button\" data-act=\"arm\">ვიწყებ</button>";
+    return;
+  }
+  const item = phase.list[state.qi];
+  let body = "<div class=\"round\">" + phase.title + " · " + (state.qi + 1) + " / " + phase.list.length + "</div>";
+  const mark = (v) => (state.answered && state.mark === v ? (state.markOk ? " good" : " bad") : "");
+  if (phase.id === "prop") {
+    body += "<div class=\"expr\">" + item[0] + "</div><div class=\"opts\">" + PROPS.map((name, i) => "<button class=\"opt " + PROP_CLASS[i] + mark(name) + "\" type=\"button\" data-act=\"prop\" data-v=\"" + name + "\">" + name + "</button>").join("") + "</div>";
+  } else if (phase.id === "sort") {
+    body += "<div class=\"expr\">" + item[0] + "</div><div class=\"bins\"><button class=\"bin" + mark("გამოსახულება") + "\" type=\"button\" data-act=\"sort\" data-v=\"გამოსახულება\">გამოსახულება<small style=\"display:block;font-weight:700\">ნიშანი არაა</small></button><button class=\"bin" + mark("ტოლობა") + "\" type=\"button\" data-act=\"sort\" data-v=\"ტოლობა\">ტოლობა<small style=\"display:block;font-weight:700\">= წერია</small></button><button class=\"bin" + mark("უტოლობა") + "\" type=\"button\" data-act=\"sort\" data-v=\"უტოლობა\">უტოლობა<small style=\"display:block;font-weight:700\">&gt; ან &lt;</small></button></div>";
+  } else if (phase.id === "value") {
+    body += "<div class=\"expr\">" + item[0] + "</div><div class=\"opts\">" + item[1].map((op) => "<button class=\"opt" + mark(op) + "\" type=\"button\" data-act=\"value\" data-v=\"" + op + "\">" + op + "</button>").join("") + "</div>";
+  } else {
+    body += "<div class=\"expr\">" + item[0] + "</div><div class=\"opts\"><button class=\"opt g" + mark("yes") + "\" type=\"button\" data-act=\"tf\" data-v=\"yes\">სწორია</button><button class=\"opt r" + mark("no") + "\" type=\"button\" data-act=\"tf\" data-v=\"no\">არასწორია</button></div>";
+  }
+  body += "<p class=\"msg\" role=\"status\">" + state.msg + "</p>";
+  stage.innerHTML = body;
+}
+
+function answer(ok, why, picked) {
+  if (state.locked || state.answered) return;
+  state.answered = true;
+  state.locked = true;
+  state.mark = picked || "";
+  state.markOk = ok;
+  stopTimer();
+  if (ok) good(why); else miss(why);
+  render();
+  later(() => { state.locked = false; advance(); }, 1300);
+}
+
+stage.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-act]");
+  if (!btn || state.locked) return;
+  const act = btn.dataset.act;
+  if (act === "begin") {
+    state.score = 0; state.hearts = 3; state.streak = 0; state.mistakes = 0; begin(0); return;
+  }
+  if (act === "arm") return arm();
+  if (!state.ready || state.answered) return;
+  if (act === "prop") {
+    const item = PROP_Q[state.qi];
+    const ok = btn.dataset.v === item[1];
+    btn.classList.add(ok ? "good" : "bad");
+    return answer(ok, ok ? item[2] : propHint(item[1], btn.dataset.v), btn.dataset.v);
+  }
+  if (act === "sort") {
+    const item = SORT_Q[state.qi];
+    const ok = btn.dataset.v === item[1];
+    const why = ok ? item[0] + " სწორ სვეტშია: " + item[1] + "." : "ნახე ნიშანი. = ტოლობაა, > ან < უტოლობაა, ნიშნის გარეშე გამოსახულებაა.";
+    return answer(ok, why, btn.dataset.v);
+  }
+  if (act === "value") {
+    const item = VALUE_Q[state.qi];
+    const ok = btn.dataset.v === item[2];
+    return answer(ok, item[3], btn.dataset.v);
+  }
+  if (act === "tf") {
+    const item = TF_Q[state.qi];
+    const said = btn.dataset.v === "yes";
+    const ok = said === item[1];
+    return answer(ok, item[2], btn.dataset.v);
+  }
+});
+
+document.getElementById("reset").onclick = () => {
+  stopTimer(); flow++; state.phase = -1; state.score = 0; state.hearts = 3; state.streak = 0; remainFrac = 1; render();
+};
+document.getElementById("mute").onclick = () => { document.getElementById("mute").textContent = Sound.toggle() ? "ჩუმად" : "ხმა"; };
+document.getElementById("mute").textContent = Sound.muted ? "ჩუმად" : "ხმა";
+render();
+
+function confetti() {
+  const layer = document.createElement("div");
+  layer.className = "confetti";
+  for (let i = 0; i < 36; i++) {
+    const s = document.createElement("i");
+    s.style.left = Math.random() * 100 + "%";
+    s.style.background = ["#8e1e2a", "#f2c14e", "#16a34a", "#fff"][i % 4];
+    layer.appendChild(s);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 1500);
+}
+function makeSound() {
+  let ctx, muted = false;
+  try { muted = localStorage.getItem("gt-mute") === "1"; } catch (e) {}
+  function ac() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(freq, dur, when) {
+    if (muted) return;
+    try {
+      const c = ac();
+      const t = c.currentTime + (when || 0);
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.05, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    } catch (e) {}
+  }
+  return {
+    get muted() { return muted; },
+    toggle() { muted = !muted; try { localStorage.setItem("gt-mute", muted ? "1" : "0"); } catch (e) {} return muted; },
+    ok() { tone(523, .1); tone(784, .14, .08); },
+    bad() { tone(180, .16); },
+    tap() { tone(520, .04); },
+    win() { [523, 659, 784, 1046].forEach((f, i) => tone(f, .16, i * .09)); }
+  };
+}
+</script>
+</body>
+</html>

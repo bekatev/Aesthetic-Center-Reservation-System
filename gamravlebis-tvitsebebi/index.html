@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>გამრავლების თვისებები — ოთხი თამაში</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1d2430;
+    --paper: #f6f1e6;
+    --line: #eadfcd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    font-family: "Noto Sans Georgian", "DejaVu Sans", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(900px 420px at 10% -10%, #ffe7a8 0%, transparent 55%),
+      radial-gradient(800px 480px at 110% 0%, #ffd0c8 0%, transparent 50%),
+      var(--paper);
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+  header h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.15; margin: 8px 0 10px; }
+  header p { max-width: 680px; font-size: 18px; line-height: 1.55; margin: 0; }
+  .kicker { letter-spacing: .04em; font-weight: 800; color: #9a3412; font-size: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+  .chip {
+    border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: 14px;
+    background: white; border: 2px solid var(--line);
+  }
+  .chip.y { background: #fff4d4; border-color: #e7b008; }
+  .chip.v { background: #f3e8ff; border-color: #8b5cf6; }
+  .chip.g { background: #e5f8ee; border-color: #16a34a; }
+  .chip.r { background: #ffe8e4; border-color: #e11d48; }
+  .chip.s { background: #e7f0f6; border-color: #3d6f8f; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 22px; }
+  a.card {
+    display: flex; flex-direction: column; gap: 8px;
+    text-decoration: none; color: inherit; background: white;
+    border-radius: 28px; padding: 22px; min-height: 230px;
+    border: 3px solid transparent; box-shadow: 0 16px 0 rgba(29, 36, 48, .06);
+    transition: transform .15s ease;
+  }
+  a.card:hover { transform: translateY(-3px); }
+  a.card:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+  .card b { font-size: 14px; }
+  .card h2 { margin: 0; font-size: 28px; line-height: 1.2; }
+  .card p { margin: 0; line-height: 1.5; font-size: 16px; }
+  .card .go {
+    margin-top: auto; align-self: flex-start; font-weight: 800;
+    background: var(--ink); color: white; border-radius: 999px; padding: 8px 14px;
+  }
+  .c1 { background: linear-gradient(180deg, #fff, #e9f8df); border-color: #b7e0a4; }
+  .c2 { background: linear-gradient(180deg, #fff, #f6ecff); border-color: #ddc7f8; }
+  .c3 { background: linear-gradient(180deg, #fff, #e5f5fb); border-color: #b7dff0; }
+  .c4 { background: linear-gradient(180deg, #fff, #fff1d8); border-color: #f0d48a; }
+  footer { margin-top: 22px; color: #5c6778; font-size: 14px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="kicker">V კლასი · გვერდი 56–57</div>
+    <h1>გამრავლების თვისებები</h1>
+    <p>ოთხი განსხვავებული თამაში. ჯერ სურათს დაალაგებ, მერე წყვილებს იპოვი, ფრჩხილს გადაიტან და ბოლოს ოლიმპიადაზე თვისებას დაასახელებ.</p>
+    <div class="chips">
+      <span class="chip">განმეორებითი შეკრება</span>
+      <span class="chip y">გადანაცვლებადობა</span>
+      <span class="chip v">ჯუფდებადობა</span>
+      <span class="chip g">განრიგებადობა</span>
+      <span class="chip r">ერთის თვისება</span>
+      <span class="chip s">ნულის თვისება</span>
+    </div>
+  </header>
+  <section class="grid">
+    <a class="card c1" href="1-vashlis-bagi.html">
+      <b>თამაში 1</b>
+      <h2>ვაშლის ბაღი</h2>
+      <p>ააწყვე თანაბარი ჯგუფები და ჩაწერე მოკლედ. 4 ჯგუფი, თითოში 3, არის 4 · 3 და არა 4 + 3.</p>
+      <span class="go">ბაღში შესვლა</span>
+    </a>
+    <a class="card c2" href="2-tsvlis-tsekva.html">
+      <b>თამაში 2</b>
+      <h2>წყვილების ცეკვა</h2>
+      <p>მეხსიერების თამაში. იპოვე ორი ჩანაწერი, რომლებიც ერთსა და იმავე ნამრავლს იძლევა, და დაარქვი თვისება.</p>
+      <span class="go">ბანქოს გახსნა</span>
+    </a>
+    <a class="card c3" href="3-frchkhili.html">
+      <b>თამაში 3</b>
+      <h2>ფრჩხილის ხიდი</h2>
+      <p>ერთი ციხე, ორი გზა. ფრჩხილი გადაიტანე ან ჯამი ცალ-ცალკე გახსენი — ნამრავლი იგივე რჩება.</p>
+      <span class="go">ხიდზე ასვლა</span>
+    </a>
+    <a class="card c4" href="4-olimpiada.html">
+      <b>თამაში 4</b>
+      <h2>თვისებების ოლიმპიადა</h2>
+      <p>სწრაფი რბოლა: რომელი თვისებაა, სად დგას ტოლობა და რას უდრის 7(a + c).</p>
+      <span class="go">სტადიონზე</span>
+    </a>
+  </section>
+  <footer>თითო თამაში ცალკე იხსნება. პროექტორზეც მუშაობს და ტელეფონზეც.</footer>
+</main>
+</body>
+</html>
